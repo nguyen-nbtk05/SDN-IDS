@@ -1,88 +1,108 @@
-<script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from 'vue'
-
-const props = withDefaults(defineProps<{
-  highlightAttack?: boolean
-}>(), { highlightAttack: false })
-
-const tick = ref(0)
-let intervalId: ReturnType<typeof setInterval>
-
-onMounted(() => { intervalId = setInterval(() => { tick.value++ }, 100) })
-onUnmounted(() => { clearInterval(intervalId) })
-
-const attackerBlink = computed(() => props.highlightAttack ? Math.floor(tick.value / 4) % 2 === 0 : true)
-
-const packets = computed(() => {
-  if (!props.highlightAttack) return []
-  return Array.from({ length: 5 }, (_, i) => ((tick.value * 3 + i * 20) % 100) / 100)
-})
-
-const CX = 370; const CY = 160
-const switches = [{ x: 140 }, { x: 310 }, { x: 480 }, { x: 620 }]
-const appNodes = [{ x: 200, l: 'Firewall' }, { x: 370, l: 'IDS Module' }, { x: 540, l: 'Load Balancer' }]
-</script>
-
+<!--
+  FILE: components/SdnTopology.vue
+  DESC: SDN topology — CSS-isolated for Slidev
+-->
 <template>
-  <svg viewBox="0 0 740 410" class="sdn-topo" xmlns="http://www.w3.org/2000/svg">
-    <defs>
-      <filter id="rGlow" x="-50%" y="-50%" width="200%" height="200%">
-        <feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
-      </filter>
-      <marker id="arrN" viewBox="0 0 10 7" refX="10" refY="3.5" markerWidth="8" markerHeight="6" orient="auto-start-reverse">
-        <polygon points="0 0,10 3.5,0 7" fill="#1B3A5C" opacity="0.5"/>
-      </marker>
-    </defs>
+  <div class="sdn-topology" :style="{ maxWidth: width + 'px' }">
+    <svg :viewBox="`0 0 ${vw} ${vh}`" width="100%" preserveAspectRatio="xMidYMid meet"
+         style="font-size: 0; overflow: visible;">
+      <defs>
+        <linearGradient id="linkGrad3" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#4f46e5" stop-opacity="0.5"/>
+          <stop offset="100%" stop-color="#0891b2" stop-opacity="0.5"/>
+        </linearGradient>
+      </defs>
 
-    <!-- Layer Backgrounds -->
-    <rect x="20" y="20" width="700" height="65" rx="10" fill="#2A5580" fill-opacity="0.05" stroke="#2A5580" stroke-opacity="0.15"/>
-    <rect x="20" y="120" width="700" height="80" rx="10" fill="#E8913A" fill-opacity="0.05" stroke="#E8913A" stroke-opacity="0.15"/>
-    <rect x="20" y="240" width="700" height="70" rx="10" fill="#1B3A5C" fill-opacity="0.05" stroke="#1B3A5C" stroke-opacity="0.15"/>
+      <!-- Control Plane zone -->
+      <rect :x="vw*0.1" y="5" :width="vw*0.55" :height="vh*0.28" rx="6"
+        fill="rgba(79,70,229,0.05)" stroke="rgba(79,70,229,0.15)" stroke-width="0.5" stroke-dasharray="3,2"/>
+      <text :x="vw*0.375" y="14" text-anchor="middle"
+        style="font-size:5px;fill:#4f46e5;font-weight:600;letter-spacing:0.08em">CONTROL PLANE</text>
 
-    <!-- Layer Labels -->
-    <text x="40" y="40" font-size="10" fill="#2A5580" opacity="0.6" font-family="Inter,sans-serif" font-weight="600">Application Layer</text>
-    <text x="40" y="138" font-size="10" fill="#E8913A" opacity="0.6" font-family="Inter,sans-serif" font-weight="600">Control Layer</text>
-    <text x="40" y="258" font-size="10" fill="#1B3A5C" opacity="0.6" font-family="Inter,sans-serif" font-weight="600">Data Layer</text>
+      <!-- Data Plane zone -->
+      <rect :x="vw*0.05" :y="vh*0.38" :width="vw*0.65" :height="vh*0.58" rx="6"
+        fill="rgba(8,145,178,0.03)" stroke="rgba(8,145,178,0.12)" stroke-width="0.5" stroke-dasharray="3,2"/>
+      <text :x="vw*0.375" :y="vh*0.42+5" text-anchor="middle"
+        style="font-size:5px;fill:#0891b2;font-weight:600;letter-spacing:0.08em">DATA PLANE</text>
 
-    <!-- App→Controller lines -->
-    <line v-for="(n, i) in appNodes" :key="'ac'+i" :x1="n.x" y1="68" :x2="CX" y2="148" stroke="#1B3A5C" stroke-opacity="0.2" stroke-width="1.5" stroke-dasharray="4,4" marker-end="url(#arrN)"/>
+      <!-- OpenFlow connections -->
+      <line v-for="(s,i) in sws" :key="'of'+i"
+        :x1="ctrlX" :y1="ctrlY+8" :x2="s.x" :y2="s.y-8"
+        stroke="url(#linkGrad3)" stroke-width="0.6" stroke-dasharray="2,2" opacity="0.6"/>
 
-    <!-- Controller→Switch lines -->
-    <line v-for="(s, i) in switches" :key="'cs'+i" :x1="CX" y1="178" :x2="s.x" y2="272" stroke="#1B3A5C" stroke-opacity="0.25" stroke-width="1.5" marker-end="url(#arrN)"/>
+      <!-- Host connections -->
+      <line v-for="(l,i) in hLinks" :key="'hl'+i"
+        :x1="l.sx" :y1="l.sy+7" :x2="l.hx" :y2="l.hy-6"
+        stroke="rgba(0,0,0,0.08)" stroke-width="0.4"/>
 
-    <!-- App Nodes -->
-    <g v-for="(n, i) in appNodes" :key="'a'+i">
-      <rect :x="n.x-45" y="40" width="90" height="28" rx="6" fill="#fff" stroke="#2A5580" stroke-width="1.5"/>
-      <text :x="n.x" y="58" text-anchor="middle" font-size="11" fill="#2A5580" font-family="Inter,sans-serif" font-weight="500">{{ n.l }}</text>
-    </g>
+      <!-- Controller -->
+      <rect :x="ctrlX-18" :y="ctrlY-8" width="36" height="16" rx="4"
+        fill="rgba(79,70,229,0.1)" stroke="#4f46e5" stroke-width="0.8"/>
+      <text :x="ctrlX" :y="ctrlY+2" text-anchor="middle"
+        style="font-size:4.5px;fill:#4f46e5;font-weight:600">Controller</text>
 
-    <!-- Controller -->
-    <rect :x="CX-60" y="145" width="120" height="34" rx="8" fill="#E8913A" fill-opacity="0.12" stroke="#E8913A" stroke-width="2"/>
-    <text :x="CX" y="166" text-anchor="middle" font-size="13" fill="#E8913A" font-family="Inter,sans-serif" font-weight="700">Ryu Controller</text>
-
-    <!-- Switches -->
-    <g v-for="(s, i) in switches" :key="'s'+i">
-      <rect :x="s.x-35" y="268" width="70" height="26" rx="5" fill="#fff" stroke="#1B3A5C" stroke-width="1.5"/>
-      <text :x="s.x" y="285" text-anchor="middle" font-size="11" fill="#1B3A5C" font-family="Inter,sans-serif" font-weight="500">OVS {{ i+1 }}</text>
-      <line :x1="s.x" y1="298" :x2="s.x" y2="330" stroke="#1B3A5C" stroke-opacity="0.2"/>
-      <circle :cx="s.x" :cy="338" r="8" fill="#FAFAF7" stroke="#1B3A5C" stroke-width="1.2"/>
-      <text :x="s.x" :y="342" text-anchor="middle" font-size="7" fill="#1B3A5C">H{{ i+1 }}</text>
-    </g>
-
-    <!-- Attack Mode -->
-    <template v-if="highlightAttack">
-      <g :filter="attackerBlink ? 'url(#rGlow)' : 'none'">
-        <line x1="80" y1="350" :x2="switches[0].x" y2="298" stroke="#DC3545" stroke-width="2" stroke-dasharray="6,3"/>
-        <rect x="40" y="354" width="80" height="30" rx="6" :fill="attackerBlink?'#DC3545':'#fff'" stroke="#DC3545" stroke-width="2"/>
-        <text x="80" y="373" text-anchor="middle" font-size="11" :fill="attackerBlink?'#fff':'#DC3545'" font-family="Inter,sans-serif" font-weight="700">⚠ Attacker</text>
+      <!-- Switches -->
+      <g v-for="(s,i) in sws" :key="'sw'+i">
+        <rect :x="s.x-14" :y="s.y-7" width="28" height="14" rx="3"
+          fill="rgba(8,145,178,0.08)" stroke="#0891b2" stroke-width="0.6"/>
+        <text :x="s.x" :y="s.y+2" text-anchor="middle"
+          style="font-size:4px;fill:#0891b2;font-weight:600">{{s.label}}</text>
       </g>
-      <circle v-for="(p, pi) in packets" :key="'pk'+pi" :cx="switches[0].x+(CX-switches[0].x)*p" :cy="280+(CY-280+18)*p-18" r="3" fill="#DC3545" opacity="0.8"/>
-      <rect :x="CX+80" y="150" width="130" height="24" rx="5" fill="#DC3545" fill-opacity="0.1" stroke="#DC3545"/>
-      <text :x="CX+145" y="166" text-anchor="middle" font-size="10" fill="#DC3545" font-family="Inter,sans-serif" font-weight="600">🔴 DDoS Detected!</text>
-    </template>
-  </svg>
-</template>
 
+      <!-- Hosts -->
+      <g v-for="(h,i) in hosts" :key="'h'+i">
+        <circle :cx="h.x" :cy="h.y" r="5"
+          fill="rgba(5,150,105,0.08)" stroke="#059669" stroke-width="0.5"/>
+        <text :x="h.x" :y="h.y+1.8" text-anchor="middle"
+          style="font-size:3.5px;fill:#059669;font-weight:600">{{h.label}}</text>
+      </g>
+
+      <!-- IDS Module -->
+      <rect :x="vw*0.72" :y="ctrlY-12" width="40" height="24" rx="4"
+        fill="rgba(220,38,38,0.06)" stroke="#dc2626" stroke-width="0.5" stroke-dasharray="2,1"/>
+      <text :x="vw*0.72+20" :y="ctrlY-2" text-anchor="middle"
+        style="font-size:4px;fill:#dc2626;font-weight:600">IDS Module</text>
+      <text :x="vw*0.72+20" :y="ctrlY+5" text-anchor="middle"
+        style="font-size:3.5px;fill:#dc2626;opacity:0.7">Entropy</text>
+
+      <!-- IDS line -->
+      <line :x1="ctrlX+19" :y1="ctrlY" :x2="vw*0.72" :y2="ctrlY"
+        stroke="#dc2626" stroke-width="0.5" stroke-dasharray="2,1" opacity="0.4"/>
+
+      <!-- OpenFlow label -->
+      <rect :x="ctrlX+22" :y="(ctrlY+sws[0].y)/2-4" width="28" height="8" rx="2"
+        fill="rgba(79,70,229,0.06)" stroke="rgba(79,70,229,0.15)" stroke-width="0.3"/>
+      <text :x="ctrlX+36" :y="(ctrlY+sws[0].y)/2+1.5" text-anchor="middle"
+        style="font-size:3.2px;fill:#4f46e5;font-weight:500">OpenFlow</text>
+    </svg>
+  </div>
+</template>
+<script setup>
+import { computed } from 'vue'
+const props = defineProps({ width: { type: Number, default: 480 } })
+const vw = 260
+const vh = 160
+const ctrlX = vw * 0.375
+const ctrlY = vh * 0.18
+const sws = [
+  { x: vw * 0.18, y: vh * 0.52, label: 'SW1' },
+  { x: vw * 0.375, y: vh * 0.52, label: 'SW2' },
+  { x: vw * 0.56, y: vh * 0.52, label: 'SW3' }
+]
+const hosts = [
+  { x: vw*0.1, y: vh*0.78, label:'H1', sw:0 },
+  { x: vw*0.22, y: vh*0.82, label:'H2', sw:0 },
+  { x: vw*0.3, y: vh*0.78, label:'H3', sw:1 },
+  { x: vw*0.44, y: vh*0.82, label:'H4', sw:1 },
+  { x: vw*0.5, y: vh*0.78, label:'H5', sw:2 },
+  { x: vw*0.62, y: vh*0.82, label:'H6', sw:2 },
+]
+const hLinks = computed(() => hosts.map(ho => ({
+  sx: sws[ho.sw].x, sy: sws[ho.sw].y, hx: ho.x, hy: ho.y
+})))
+</script>
 <style scoped>
-.sdn-topo { width: 100%; max-width: 740px; height: auto; margin: 0 auto; display: block; }
+.sdn-topology { display: flex; justify-content: center; width: 100%; margin: 0 auto; }
+.sdn-topology svg { display: block; font-size: 0 !important; }
+.sdn-topology svg text { font-size: inherit; }
 </style>

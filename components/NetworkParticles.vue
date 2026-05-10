@@ -1,127 +1,102 @@
-<script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
-
-interface Particle {
-  x: number
-  y: number
-  vx: number
-  vy: number
-  radius: number
-  opacity: number
-}
-
-const canvasRef = ref<HTMLCanvasElement | null>(null)
-let animationId: number
-let particles: Particle[] = []
-const PARTICLE_COUNT = 55
-const CONNECTION_DISTANCE = 140
-const SPEED = 0.3
-
-function initParticles(w: number, h: number) {
-  particles = []
-  for (let i = 0; i < PARTICLE_COUNT; i++) {
-    particles.push({
-      x: Math.random() * w,
-      y: Math.random() * h,
-      vx: (Math.random() - 0.5) * SPEED,
-      vy: (Math.random() - 0.5) * SPEED,
-      radius: Math.random() * 2 + 1.5,
-      opacity: Math.random() * 0.4 + 0.3,
-    })
+<!--
+  FILE: components/NetworkParticles.vue
+  DESC: Animated network particles — warm white theme (soft muted colors)
+-->
+<template>
+  <div class="network-particles" ref="container">
+    <svg :width="width" :height="height" class="particles-svg">
+      <line v-for="(conn, idx) in connections" :key="'c-' + idx"
+        :x1="conn.x1" :y1="conn.y1" :x2="conn.x2" :y2="conn.y2"
+        :stroke="conn.color" :stroke-width="conn.width" :opacity="conn.opacity"
+        stroke-linecap="round" class="connection-line"/>
+      <circle v-for="(flow, idx) in dataFlows" :key="'f-' + idx"
+        :cx="flow.cx" :cy="flow.cy" :r="flow.r" :fill="flow.color" :opacity="flow.opacity"
+        class="flow-particle"/>
+      <g v-for="(node, idx) in nodes" :key="'n-' + idx">
+        <circle :cx="node.x" :cy="node.y" :r="node.r + 4"
+          :fill="node.glowColor" :opacity="node.glowOpacity" class="node-glow"/>
+        <circle :cx="node.x" :cy="node.y" :r="node.r"
+          :fill="node.color" :opacity="node.opacity" class="node-core"/>
+      </g>
+    </svg>
+  </div>
+</template>
+<script setup>
+import { ref, reactive, onMounted, onUnmounted } from 'vue';
+const props = defineProps({
+  count: { type: Number, default: 25 },
+  speed: { type: Number, default: 0.3 },
+  connectionDistance: { type: Number, default: 150 },
+  colors: { type: Array, default: () => ['#a5b4fc', '#99f6e4', '#c4b5fd', '#bae6fd', '#bbf7d0'] }
+});
+const container = ref(null);
+const width = ref(960);
+const height = ref(540);
+let animationId = null;
+const nodes = reactive([]);
+const connections = reactive([]);
+const dataFlows = reactive([]);
+function createNodes() {
+  nodes.length = 0;
+  for (let i = 0; i < props.count; i++) {
+    nodes.push({
+      x: Math.random() * width.value, y: Math.random() * height.value,
+      vx: (Math.random() - 0.5) * props.speed, vy: (Math.random() - 0.5) * props.speed,
+      r: 2 + Math.random() * 2.5,
+      color: props.colors[Math.floor(Math.random() * props.colors.length)],
+      glowColor: props.colors[Math.floor(Math.random() * props.colors.length)],
+      opacity: 0.3 + Math.random() * 0.4,
+      glowOpacity: 0.05 + Math.random() * 0.08,
+      phase: Math.random() * Math.PI * 2
+    });
   }
 }
-
-function draw(ctx: CanvasRenderingContext2D, w: number, h: number) {
-  ctx.clearRect(0, 0, w, h)
-
-  // Update positions
-  for (const p of particles) {
-    p.x += p.vx
-    p.y += p.vy
-    if (p.x < 0 || p.x > w) p.vx *= -1
-    if (p.y < 0 || p.y > h) p.vy *= -1
+function updateNodes(time) {
+  for (const node of nodes) {
+    node.x += node.vx; node.y += node.vy;
+    if (node.x < 0 || node.x > width.value) node.vx *= -1;
+    if (node.y < 0 || node.y > height.value) node.vy *= -1;
+    node.opacity = 0.25 + Math.sin(time * 0.001 + node.phase) * 0.2;
+    node.glowOpacity = 0.04 + Math.sin(time * 0.002 + node.phase) * 0.04;
   }
-
-  // Draw connections
-  for (let i = 0; i < particles.length; i++) {
-    for (let j = i + 1; j < particles.length; j++) {
-      const dx = particles[i].x - particles[j].x
-      const dy = particles[i].y - particles[j].y
-      const dist = Math.sqrt(dx * dx + dy * dy)
-      if (dist < CONNECTION_DISTANCE) {
-        const alpha = (1 - dist / CONNECTION_DISTANCE) * 0.25
-        ctx.strokeStyle = `rgba(27, 58, 92, ${alpha})`
-        ctx.lineWidth = 0.8
-        ctx.beginPath()
-        ctx.moveTo(particles[i].x, particles[i].y)
-        ctx.lineTo(particles[j].x, particles[j].y)
-        ctx.stroke()
+}
+function updateConnections() {
+  connections.length = 0;
+  for (let i = 0; i < nodes.length; i++) {
+    for (let j = i + 1; j < nodes.length; j++) {
+      const dx = nodes[i].x - nodes[j].x, dy = nodes[i].y - nodes[j].y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist < props.connectionDistance) {
+        connections.push({
+          x1: nodes[i].x, y1: nodes[i].y, x2: nodes[j].x, y2: nodes[j].y,
+          color: nodes[i].color, width: 0.4 + (1 - dist / props.connectionDistance) * 0.5,
+          opacity: (1 - dist / props.connectionDistance) * 0.15
+        });
       }
     }
   }
-
-  // Draw particles
-  for (const p of particles) {
-    // Glow
-    const gradient = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.radius * 4)
-    gradient.addColorStop(0, `rgba(232, 145, 58, ${p.opacity * 0.3})`)
-    gradient.addColorStop(1, 'rgba(232, 145, 58, 0)')
-    ctx.fillStyle = gradient
-    ctx.beginPath()
-    ctx.arc(p.x, p.y, p.radius * 4, 0, Math.PI * 2)
-    ctx.fill()
-
-    // Core
-    ctx.fillStyle = `rgba(27, 58, 92, ${p.opacity})`
-    ctx.beginPath()
-    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2)
-    ctx.fill()
-  }
-
-  animationId = requestAnimationFrame(() => draw(ctx, w, h))
 }
-
+function updateDataFlows(time) {
+  dataFlows.length = 0;
+  const maxFlows = Math.min(connections.length, 6);
+  for (let i = 0; i < maxFlows; i++) {
+    const conn = connections[i]; if (!conn) continue;
+    const t = ((time * 0.001 + i * 0.7) % 1);
+    dataFlows.push({
+      cx: conn.x1 + (conn.x2 - conn.x1) * t,
+      cy: conn.y1 + (conn.y2 - conn.y1) * t,
+      r: 1.2, color: '#a5b4fc', opacity: 0.35 * Math.sin(t * Math.PI)
+    });
+  }
+}
+function animate(time) { updateNodes(time); updateConnections(); updateDataFlows(time); animationId = requestAnimationFrame(animate); }
 onMounted(() => {
-  const canvas = canvasRef.value
-  if (!canvas) return
-  const ctx = canvas.getContext('2d')
-  if (!ctx) return
-
-  const resize = () => {
-    const dpr = window.devicePixelRatio || 1
-    const rect = canvas.parentElement?.getBoundingClientRect() || canvas.getBoundingClientRect()
-    canvas.width = rect.width * dpr
-    canvas.height = rect.height * dpr
-    canvas.style.width = `${rect.width}px`
-    canvas.style.height = `${rect.height}px`
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
-    initParticles(rect.width, rect.height)
-  }
-
-  resize()
-  draw(ctx, canvas.width / (window.devicePixelRatio || 1), canvas.height / (window.devicePixelRatio || 1))
-  window.addEventListener('resize', resize)
-})
-
-onUnmounted(() => {
-  cancelAnimationFrame(animationId)
-})
+  if (container.value) { width.value = container.value.clientWidth || 960; height.value = container.value.clientHeight || 540; }
+  createNodes(); animationId = requestAnimationFrame(animate);
+});
+onUnmounted(() => { if (animationId) cancelAnimationFrame(animationId); });
 </script>
-
-<template>
-  <canvas
-    ref="canvasRef"
-    class="network-particles"
-  />
-</template>
-
 <style scoped>
-.network-particles {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 0;
-  pointer-events: none;
-}
+.network-particles { position: absolute; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+.particles-svg { width: 100%; height: 100%; }
 </style>
