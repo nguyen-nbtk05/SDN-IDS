@@ -4,7 +4,14 @@
 -->
 <template>
   <div class="metric-card glass-card" :class="[`variant-${variant}`]">
-    <div class="metric-icon" v-if="icon"><span class="icon-text">{{ icon }}</span></div>
+    <div class="metric-icon" v-if="icon || $slots.icon">
+      <span class="icon-text">
+        <slot name="icon">
+          <span v-if="icon && icon.startsWith('i-')" :class="icon" style="display: inline-block; width: 1.2em; height: 1.2em;"></span>
+          <span v-else-if="icon">{{ icon }}</span>
+        </slot>
+      </span>
+    </div>
     <div class="metric-body">
       <div class="metric-val">{{ value }}</div>
       <div class="metric-lbl">{{ label }}</div>

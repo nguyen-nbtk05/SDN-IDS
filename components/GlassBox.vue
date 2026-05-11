@@ -5,8 +5,13 @@
 -->
 <template>
   <div class="glass-box glass-card" :class="{ 'compact': compact }">
-    <div class="glass-box-header" v-if="title">
-      <span class="glass-box-icon" v-if="icon">{{ icon }}</span>
+    <div class="glass-box-header" v-if="title || $slots.icon || icon">
+      <span class="glass-box-icon" v-if="icon || $slots.icon">
+        <slot name="icon">
+          <span v-if="icon && icon.startsWith('i-')" :class="icon" style="display: inline-block; width: 1.2em; height: 1.2em;"></span>
+          <span v-else-if="icon">{{ icon }}</span>
+        </slot>
+      </span>
       <span class="glass-box-title">{{ title }}</span>
     </div>
     <div class="glass-box-content">

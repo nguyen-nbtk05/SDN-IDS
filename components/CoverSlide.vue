@@ -116,6 +116,9 @@ defineProps({
   color: var(--sdn-text-secondary);
   font-weight: 400;
   margin-bottom: 24px;
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .cover-divider {

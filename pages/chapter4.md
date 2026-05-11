@@ -24,7 +24,7 @@ transition: slide-left
 
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 12px;">
 
-<GlassBox title="Phần cứng" icon="🖥️">
+<GlassBox title="Phần cứng" icon="i-twemoji-desktop-computer">
 
 <v-clicks>
 
@@ -37,7 +37,7 @@ transition: slide-left
 
 </GlassBox>
 
-<GlassBox title="Phần mềm" icon="💻">
+<GlassBox title="Phần mềm" icon="i-twemoji-laptop">
 
 <v-clicks>
 
@@ -56,7 +56,7 @@ transition: slide-left
 
 <div v-click style="margin-top: 12px;">
 
-<GlassBox title="Yêu cầu tối thiểu" icon="⚡" compact>
+<GlassBox title="Yêu cầu tối thiểu" icon="i-twemoji-high-voltage" compact>
 
 - **RAM ≥ 8GB** (Mininet + Controller chiếm ~2GB), **Python ≥ 3.8**, **Ubuntu ≥ 20.04**
 
@@ -104,7 +104,7 @@ SDN-IDS/
 
 <div>
 
-<GlassBox title="Mô tả module" icon="📦" compact>
+<GlassBox title="Mô tả module" icon="i-twemoji-package" compact>
 
 <v-clicks>
 
@@ -160,9 +160,9 @@ def is_attack(entropy: float, threshold: float = 1.0) -> bool:
 ```
 
 <div v-click style="margin-top: 8px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
-  <MetricCard icon="📊" value="O(n)" label="Complexity" variant="primary" />
-  <MetricCard icon="🎯" value="1.0" label="Threshold" variant="warning" />
-  <MetricCard icon="⏱️" value="< 1ms" label="Calc Time" variant="success" />
+  <MetricCard icon="i-twemoji-bar-chart" value="O(n)" label="Complexity" variant="primary" />
+  <MetricCard icon="i-twemoji-direct-hit" value="1.0" label="Threshold" variant="warning" />
+  <MetricCard icon="i-twemoji-stopwatch" value="< 1ms" label="Calc Time" variant="success" />
 </div>
 
 ---
@@ -248,7 +248,7 @@ transition: slide-left
 
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 12px;">
 
-<GlassBox title="Xử lý ngoại lệ" icon="🛡️">
+<GlassBox title="Xử lý ngoại lệ" icon="i-twemoji-shield">
 
 <v-clicks>
 
@@ -262,7 +262,7 @@ transition: slide-left
 
 </GlassBox>
 
-<GlassBox title="Bảo mật hệ thống" icon="🔒">
+<GlassBox title="Bảo mật hệ thống" icon="i-twemoji-locked">
 
 <v-clicks>
 

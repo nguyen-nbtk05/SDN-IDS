@@ -24,7 +24,7 @@ transition: slide-left
 
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 12px;">
 
-<GlassBox title="Yêu cầu chức năng" icon="⚙️">
+<GlassBox title="Yêu cầu chức năng" icon="i-twemoji-gear">
 
 <v-clicks>
 
@@ -40,7 +40,7 @@ transition: slide-left
 
 </GlassBox>
 
-<GlassBox title="Yêu cầu phi chức năng" icon="📊">
+<GlassBox title="Yêu cầu phi chức năng" icon="i-twemoji-bar-chart">
 
 <v-clicks>
 
@@ -146,7 +146,7 @@ transition: slide-left
 
 <div class="divider"></div>
 
-<GlassBox title="Schema — Flow Statistics Buffer" icon="🗄️">
+<GlassBox title="Schema — Flow Statistics Buffer" icon="i-twemoji-file-cabinet">
 
 | Trường | Kiểu dữ liệu | Mô tả |
 |---|---|---|

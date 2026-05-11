@@ -26,19 +26,19 @@ transition: slide-left
 
 | Mục tiêu | Kết quả | Đánh giá |
 |---|---|---|
-| **MT-01**: Xây dựng mô hình SDN (Mininet + Ryu + OF 1.3) | Topo 3 SW, 6 hosts hoạt động ổn định | ✅ Đạt |
-| **MT-02**: Module thu thập Flow Statistics (polling 5s) | Delta packets chính xác, REST API ổn định | ✅ Đạt |
-| **MT-03**: Phân tích Shannon Entropy (threshold 1.0) | Entropy < 1.0 khi SYN Flood, phát hiện trong ~7s | ✅ Đạt |
-| **MT-04**: Tự động ngăn chặn (drop flow rule < 10s) | Drop rule installed thành công, ~8s response | ✅ Đạt |
-| **MT-05**: Accuracy ≥ 95%, FP < 5% | Accuracy 96.5%, FP 3.2% | ✅ Đạt |
+| **MT-01**: Xây dựng mô hình SDN (Mininet + Ryu + OF 1.3) | Topo 3 SW, 6 hosts hoạt động ổn định | <twemoji-white-heavy-check-mark /> Đạt |
+| **MT-02**: Module thu thập Flow Statistics (polling 5s) | Delta packets chính xác, REST API ổn định | <twemoji-white-heavy-check-mark /> Đạt |
+| **MT-03**: Phân tích Shannon Entropy (threshold 1.0) | Entropy < 1.0 khi SYN Flood, phát hiện trong ~7s | <twemoji-white-heavy-check-mark /> Đạt |
+| **MT-04**: Tự động ngăn chặn (drop flow rule < 10s) | Drop rule installed thành công, ~8s response | <twemoji-white-heavy-check-mark /> Đạt |
+| **MT-05**: Accuracy ≥ 95%, FP < 5% | Accuracy 96.5%, FP 3.2% | <twemoji-white-heavy-check-mark /> Đạt |
 
 </div>
 
 <div v-click style="margin-top: 14px; text-align: center;">
   <div style="display:inline-flex;gap:16px;">
-    <MetricCard icon="✅" value="5/5" label="Mục tiêu đạt" variant="success" />
-    <MetricCard icon="📊" value="96.5%" label="Accuracy" variant="primary" />
-    <MetricCard icon="⏱️" value="~7s" label="Detection" variant="accent" />
+    <MetricCard icon="i-twemoji-white-heavy-check-mark" value="5/5" label="Mục tiêu đạt" variant="success" />
+    <MetricCard icon="i-twemoji-bar-chart" value="96.5%" label="Accuracy" variant="primary" />
+    <MetricCard icon="i-twemoji-stopwatch" value="~7s" label="Detection" variant="accent" />
   </div>
 </div>
 
@@ -53,7 +53,7 @@ transition: slide-left
 
 ::default::
 
-## ✅ Ưu điểm
+## <twemoji-white-heavy-check-mark /> Ưu điểm
 
 <v-clicks>
 
@@ -68,7 +68,7 @@ transition: slide-left
 
 ::right::
 
-## ❌ Hạn chế
+## <twemoji-cross-mark /> Hạn chế
 
 <v-clicks>
 
@@ -145,7 +145,7 @@ transition: slide-left
 
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 14px;">
 
-<GlassBox title="Kỹ thuật" icon="🔧">
+<GlassBox title="Kỹ thuật" icon="i-twemoji-wrench">
 
 <v-clicks>
 
@@ -158,7 +158,7 @@ transition: slide-left
 
 </GlassBox>
 
-<GlassBox title="Quy trình" icon="📋">
+<GlassBox title="Quy trình" icon="i-twemoji-clipboard">
 
 <v-clicks>
 

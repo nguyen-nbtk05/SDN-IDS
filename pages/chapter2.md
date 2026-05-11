@@ -7,9 +7,9 @@ chapterNumber: 2
 transition: slide-left
 ---
 
-# Chương 2
+# CHƯƠNG 2
 
-## Cơ sở Lý thuyết và Công nghệ
+## CƠ SỞ LÝ THUYẾT & CÔNG NGHỆ
 
 Nền tảng kỹ thuật, công nghệ sử dụng và nghiên cứu liên quan
 
@@ -18,44 +18,44 @@ layout: content-card
 transition: slide-left
 ---
 
-# 2.1 Tổng quan công nghệ sử dụng
+# 2.1 TỔNG QUAN CÔNG NGHỆ SỬ DỤNG
 
 <div class="divider"></div>
 
 <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 12px;">
 
 <div v-click class="glass-card" style="padding:14px 16px; text-align:center;">
-  <div style="font-size:1.8rem;margin-bottom:6px;">🐍</div>
+  <div style="font-size:1.8rem;margin-bottom:6px;"><twemoji-snake /></div>
   <strong style="font-size:0.82rem;color:var(--sdn-text-primary);">Python 3.10+</strong>
   <p style="font-size:0.72rem;margin-top:4px;">Ngôn ngữ chính, thư viện phong phú cho networking & data analysis</p>
 </div>
 
 <div v-click class="glass-card" style="padding:14px 16px; text-align:center;">
-  <div style="font-size:1.8rem;margin-bottom:6px;">🎛️</div>
+  <div style="font-size:1.8rem;margin-bottom:6px;"><twemoji-control-knobs /></div>
   <strong style="font-size:0.82rem;color:var(--sdn-text-primary);">Ryu Controller</strong>
   <p style="font-size:0.72rem;margin-top:4px;">SDN Controller Python-based, hỗ trợ OpenFlow 1.0–1.5, REST API tích hợp</p>
 </div>
 
 <div v-click class="glass-card" style="padding:14px 16px; text-align:center;">
-  <div style="font-size:1.8rem;margin-bottom:6px;">🌐</div>
+  <div style="font-size:1.8rem;margin-bottom:6px;"><twemoji-globe-with-meridians /></div>
   <strong style="font-size:0.82rem;color:var(--sdn-text-primary);">Mininet</strong>
   <p style="font-size:0.72rem;margin-top:4px;">Emulator mạng ảo, tạo topo SDN linh hoạt trên single machine</p>
 </div>
 
 <div v-click class="glass-card" style="padding:14px 16px; text-align:center;">
-  <div style="font-size:1.8rem;margin-bottom:6px;">📡</div>
+  <div style="font-size:1.8rem;margin-bottom:6px;"><twemoji-satellite-antenna /></div>
   <strong style="font-size:0.82rem;color:var(--sdn-text-primary);">OpenFlow 1.3</strong>
   <p style="font-size:0.72rem;margin-top:4px;">Giao thức chuẩn SDN, hỗ trợ multi-table, flow statistics</p>
 </div>
 
 <div v-click class="glass-card" style="padding:14px 16px; text-align:center;">
-  <div style="font-size:1.8rem;margin-bottom:6px;">🔨</div>
+  <div style="font-size:1.8rem;margin-bottom:6px;"><twemoji-hammer /></div>
   <strong style="font-size:0.82rem;color:var(--sdn-text-primary);">hping3</strong>
   <p style="font-size:0.72rem;margin-top:4px;">Công cụ tạo gói tin SYN Flood để kiểm thử tấn công DDoS</p>
 </div>
 
 <div v-click class="glass-card" style="padding:14px 16px; text-align:center;">
-  <div style="font-size:1.8rem;margin-bottom:6px;">🐧</div>
+  <div style="font-size:1.8rem;margin-bottom:6px;"><twemoji-penguin /></div>
   <strong style="font-size:0.82rem;color:var(--sdn-text-primary);">Ubuntu 22.04 LTS</strong>
   <p style="font-size:0.72rem;margin-top:4px;">Hệ điều hành triển khai, tương thích tốt với Mininet & Ryu</p>
 </div>
@@ -77,10 +77,10 @@ transition: slide-left
 |---|---|---|---|
 | **Kiến trúc** | Inline / Passive | Multi-threaded | SDN-based (centralized) |
 | **Phương pháp** | Signature-based | Signature + Protocol | **Entropy + Flow Stats** |
-| **Zero-day** | ❌ Không phát hiện | ❌ Hạn chế | ✅ Phát hiện anomaly |
-| **Tự động chặn** | ❌ Cần thêm IPS | ⚠️ Partial | ✅ **Drop rule tự động** |
+| **Zero-day** | <twemoji-cross-mark /> Không phát hiện | <twemoji-cross-mark /> Hạn chế | <twemoji-white-heavy-check-mark /> Phát hiện anomaly |
+| **Tự động chặn** | <twemoji-cross-mark /> Cần thêm IPS | <twemoji-warning /> Partial | <twemoji-white-heavy-check-mark /> **Drop rule tự động** |
 | **Thời gian PH** | ~Giây | ~Giây | **< 10 giây** |
-| **Programmability** | Hạn chế | Hạn chế | ✅ **OpenFlow rules** |
+| **Programmability** | Hạn chế | Hạn chế | <twemoji-white-heavy-check-mark /> **OpenFlow rules** |
 
 </div>
 
@@ -185,7 +185,7 @@ transition: slide-left
 
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 16px;">
 
-<GlassBox title="Chuẩn giao thức" icon="📡">
+<GlassBox title="Chuẩn giao thức" icon="i-twemoji-satellite-antenna">
 
 <v-clicks>
 
@@ -198,7 +198,7 @@ transition: slide-left
 
 </GlassBox>
 
-<GlassBox title="Chuẩn phát triển" icon="🔧">
+<GlassBox title="Chuẩn phát triển" icon="i-twemoji-wrench">
 
 <v-clicks>
 

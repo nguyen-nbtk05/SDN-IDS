@@ -39,7 +39,7 @@ transition: slide-left
 </div>
 
 <div v-click class="glass-card" style="padding:14px; text-align:center;">
-  <div style="font-size:1.5rem;margin-bottom:6px;">🖥️</div>
+  <div style="font-size:1.5rem;margin-bottom:6px;"><twemoji-desktop-computer /></div>
   <strong style="font-size:0.78rem;color:var(--sdn-success);">System Test</strong>
   <p style="font-size:0.7rem;margin-top:4px;">Chạy toàn bộ hệ thống trên Mininet + Ryu + hping3</p>
   <div class="badge badge-success" style="margin-top:6px;font-size:0.6rem;">Mininet + hping3</div>
@@ -67,16 +67,16 @@ transition: slide-left
 
 | Mã | Chức năng | Dữ liệu đầu vào | Kết quả mong đợi | Thực tế | Status |
 |---|---|---|---|---|---|
-| TC-01 | Entropy đồng đều | 100 IP khác nhau | H ≈ 6.64 | H = 6.6439 | ✅ Pass |
-| TC-02 | Entropy 1 IP | 100 packets cùng IP | H = 0.0 | H = 0.0 | ✅ Pass |
-| TC-03 | Entropy threshold | H = 0.95 | is_attack = True | True | ✅ Pass |
-| TC-04 | Delta packets | count(t)=100, prev=80 | delta = 20 | delta = 20 | ✅ Pass |
-| TC-05 | API timeout | Controller offline | Retry 3x → Error log | Đúng | ✅ Pass |
-| TC-06 | SYN Flood detect | hping3 --flood | Alert < 10s | Alert ≈ 7s | ✅ Pass |
-| TC-07 | Auto drop rule | Entropy < 1.0 | Flow rule installed | Installed | ✅ Pass |
-| TC-08 | Normal traffic | iperf giữa hosts | Không alert | Không alert | ✅ Pass |
-| TC-09 | Window overflow | > 4 samples | Oldest dropped | Đúng | ✅ Pass |
-| TC-10 | Recovery | Stop attack | Entropy phục hồi | H > 2.5 | ✅ Pass |
+| TC-01 | Entropy đồng đều | 100 IP khác nhau | H ≈ 6.64 | H = 6.6439 | <twemoji-white-heavy-check-mark /> Pass |
+| TC-02 | Entropy 1 IP | 100 packets cùng IP | H = 0.0 | H = 0.0 | <twemoji-white-heavy-check-mark /> Pass |
+| TC-03 | Entropy threshold | H = 0.95 | is_attack = True | True | <twemoji-white-heavy-check-mark /> Pass |
+| TC-04 | Delta packets | count(t)=100, prev=80 | delta = 20 | delta = 20 | <twemoji-white-heavy-check-mark /> Pass |
+| TC-05 | API timeout | Controller offline | Retry 3x → Error log | Đúng | <twemoji-white-heavy-check-mark /> Pass |
+| TC-06 | SYN Flood detect | hping3 --flood | Alert < 10s | Alert ≈ 7s | <twemoji-white-heavy-check-mark /> Pass |
+| TC-07 | Auto drop rule | Entropy < 1.0 | Flow rule installed | Installed | <twemoji-white-heavy-check-mark /> Pass |
+| TC-08 | Normal traffic | iperf giữa hosts | Không alert | Không alert | <twemoji-white-heavy-check-mark /> Pass |
+| TC-09 | Window overflow | > 4 samples | Oldest dropped | Đúng | <twemoji-white-heavy-check-mark /> Pass |
+| TC-10 | Recovery | Stop attack | Entropy phục hồi | H > 2.5 | <twemoji-white-heavy-check-mark /> Pass |
 
 </div>
 
@@ -94,10 +94,10 @@ transition: slide-left
 <div>
 
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-  <MetricCard v-click icon="⚡" value="~7s" label="Detection Time" description="Từ khi bắt đầu tấn công" variant="primary" />
-  <MetricCard v-click icon="🎯" value="96.5%" label="Accuracy" description="True Positive Rate" variant="success" />
-  <MetricCard v-click icon="⚠️" value="3.2%" label="False Positive" description="Dưới ngưỡng 5%" variant="warning" />
-  <MetricCard v-click icon="🧠" value="18%" label="CPU Usage" description="Controller average" variant="accent" />
+  <MetricCard v-click icon="i-twemoji-high-voltage" value="~7s" label="Detection Time" description="Từ khi bắt đầu tấn công" variant="primary" />
+  <MetricCard v-click icon="i-twemoji-direct-hit" value="96.5%" label="Accuracy" description="True Positive Rate" variant="success" />
+  <MetricCard v-click icon="i-twemoji-warning" value="3.2%" label="False Positive" description="Dưới ngưỡng 5%" variant="warning" />
+  <MetricCard v-click icon="i-twemoji-brain" value="18%" label="CPU Usage" description="Controller average" variant="accent" />
 </div>
 
 </div>
@@ -125,7 +125,7 @@ transition: slide-left
 
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 12px;">
 
-<GlassBox title="✅ Kết quả đạt được" icon="">
+<GlassBox title="<twemoji-white-heavy-check-mark /> Kết quả đạt được" icon="">
 
 <v-clicks>
 
