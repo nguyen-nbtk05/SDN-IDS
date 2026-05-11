@@ -17,32 +17,37 @@
 
       <h1 class="cover-title animate-fade-in-up">
         <slot name="title">
-          Phát hiện và Ngăn chặn<br/>
-          <span class="gradient-text">Tấn công mạng</span> dựa trên<br/>
-          mô hình <span class="gradient-text-accent">SDN</span>
+          PHÁT HIỆN VÀ NGĂN CHẶN
+          <span class="gradient-text">TẤN CÔNG MẠNG</span> DỰA TRÊN
+          MÔ HÌNH <span class="gradient-text-accent">SDN</span>
         </slot>
       </h1>
 
       <p class="cover-subtitle animate-fade-in-up delay-200">
         <slot name="subtitle">
-          Sử dụng thống kê luồng (Flow Statistics) và phân tích Entropy
+          SỬ DỤNG THỐNG KÊ LUỒNG VÀ PHÂN TÍCH ENTROPY
         </slot>
       </p>
 
       <div class="cover-divider animate-fade-in-left delay-300"></div>
 
       <div class="cover-meta animate-fade-in-up delay-400">
-        <div class="meta-row" v-if="advisor">
-          <span class="meta-label">Giảng viên hướng dẫn:</span>
-          <span class="meta-value">{{ advisor }}</span>
-        </div>
-        <div class="meta-row" v-if="student">
-          <span class="meta-label">Sinh viên thực hiện:</span>
-          <span class="meta-value">{{ student }}</span>
-        </div>
-        <div class="meta-row" v-if="year">
-          <span class="meta-label">Năm học:</span>
-          <span class="meta-value">{{ year }}</span>
+        <div class="meta-grid">
+          <template v-if="advisor">
+            <div class="meta-label">Giảng viên:</div>
+            <div class="meta-value">{{ advisor }}</div>
+          </template>
+          <template v-if="student">
+            <div class="meta-label">Sinh viên thực hiện:</div>
+            <div class="meta-value">
+              <template v-if="Array.isArray(student)">
+                <div v-for="(s, i) in student" :key="i">{{ s }}</div>
+              </template>
+              <template v-else>
+                {{ student }}
+              </template>
+            </div>
+          </template>
         </div>
       </div>
     </div>
@@ -53,10 +58,9 @@
 
 <script setup>
 defineProps({
-  badge: { type: String, default: 'Đồ án chuyên ngành' },
-  advisor: { type: String, default: 'TS. Nguyễn Văn A' },
-  student: { type: String, default: 'Nguyễn Văn B — MSSV: 2012345' },
-  year: { type: String, default: '2025 – 2026' }
+  badge: { type: String, default: 'CHUYÊN ĐỀ MẠNG MÁY TÍNH 1' },
+  advisor: { type: String, default: 'Trần Vĩnh Phúc' },
+  student: { type: [String, Array], default: () => ['Nguyễn Bá Thiều Khôi Nguyên — MSSV: 2312702', 'Hồ Quốc Long — MSSV: 2312675'] }
 })
 </script>
 
@@ -115,33 +119,38 @@ defineProps({
 }
 
 .cover-divider {
-  width: 80px; height: 3px; border-radius: 2px;
+  width: 200px; height: 3px; border-radius: 2px;
   background: var(--sdn-gradient-primary);
   margin: 0 auto 24px;
 }
 
 .cover-meta {
   display: flex;
-  flex-direction: column;
-  gap: 8px;
-  text-align: center;
+  justify-content: center;
+  width: 100%;
 }
 
-.meta-row {
-  font-size: 0.82rem;
-  display: flex;
-  justify-content: center;
-  gap: 8px;
+.meta-grid {
+  display: inline-grid;
+  grid-template-columns: max-content max-content;
+  column-gap: 16px;
+  row-gap: 8px;
+  text-align: left;
+  font-size: 0.85rem;
 }
 
 .meta-label {
   color: var(--sdn-text-muted);
   font-weight: 500;
+  text-align: left;
 }
 
 .meta-value {
   color: var(--sdn-text-primary);
   font-weight: 600;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .cover-bottom-accent {

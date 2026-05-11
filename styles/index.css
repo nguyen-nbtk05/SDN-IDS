@@ -56,8 +56,9 @@
   --sdn-shadow-glow: 0 0 20px rgba(79, 70, 229, 0.1);
 
   /* Typography */
-  --sdn-font-sans: 'Outfit', 'Inter', system-ui, -apple-system, sans-serif;
-  --sdn-font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+  --sdn-font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --sdn-font-mono: 'JetBrains Mono', monospace;
+  --sdn-font-serif: 'Merriweather', serif;
 
   /* Border Radius */
   --sdn-radius-sm: 6px;
@@ -123,6 +124,7 @@ p, li {
   font-weight: 400;
   line-height: 1.7;
   color: var(--sdn-text-secondary);
+  text-align: justify;
 }
 
 code {
@@ -214,6 +216,8 @@ a:hover {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  padding-top: 0.1em;
+  padding-bottom: 0.1em;
 }
 
 .gradient-text-accent {
@@ -221,6 +225,8 @@ a:hover {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  padding-top: 0.1em;
+  padding-bottom: 0.1em;
 }
 
 /* ── Badge ──────────────────────────────────────────────────── */

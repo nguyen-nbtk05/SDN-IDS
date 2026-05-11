@@ -18,38 +18,47 @@ layout: content-card
 transition: slide-left
 ---
 
-# 1.1 Lý do chọn đề tài
+# 1.1 LÝ DO CHỌN ĐỀ TÀI
 
 <div class="divider"></div>
 
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 12px;">
 
-<GlassBox title="Bối cảnh thực tiễn" icon="🌐">
+<GlassBox title="BỐI CẢNH THỰC TIỄN" icon="🌐">
 
 <v-clicks>
 
-- Tấn công **DDoS** tăng **300%** giai đoạn 2020–2025 (Cloudflare Report)
-- Mạng truyền thống thiếu khả năng **phản ứng tự động** trước tấn công
-- **Thời gian phát hiện trung bình** lên tới 280 ngày (IBM Security)
-- Chi phí thiệt hại trung bình **4.45 triệu USD/vụ** tấn công
+- Sự bùng nổ của **IoT, Cloud và Big Data** làm tăng lưu lượng mạng.
+- **Tấn công mạng** ngày càng tinh vi và quy mô lớn.
+- Mạng truyền thống khó mở rộng, quản trị phân tán và phản ứng chậm.
 
 </v-clicks>
 
 </GlassBox>
 
-<GlassBox title="Vấn đề tồn tại" icon="⚡">
+<GlassBox title="VẤN ĐỀ TỒN TẠI" icon="⚡">
 
 <v-clicks>
 
-- Hệ thống **IDS truyền thống** (Snort, Suricata) dựa trên chữ ký → không phát hiện tấn công mới
-- Thiếu **khả năng lập trình** linh hoạt trên thiết bị mạng
-- **SDN** mở ra hướng tiếp cận mới: giám sát tập trung, phản ứng nhanh
-- **Entropy-based detection** hiệu quả với tấn công phân tán (DDoS)
+- **Các phương pháp truyền thống**: tiêu tốn tài nguyên & phản ứng chậm với mạng băng thông rộng.
+- **Thiếu khả năng lập trình** linh hoạt trên thiết bị mạng.
 
 </v-clicks>
 
 </GlassBox>
 
+</div>
+
+<div v-click class="glass-card" style="margin-top: 20px; padding: 12px 16px;">
+  <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+    <span class="badge badge-success"></span>
+    <strong style="font-size:0.85rem;color:var(--sdn-text-primary);">GIẢI PHÁP BẢO MẬT</strong>
+  </div>
+  <ul style="font-size:0.75rem; margin: 0; padding-left: 20px; line-height: 1.5;">
+    <li>Khắc phục nhược điểm tốn tài nguyên của phương pháp truyền thống.</li>
+    <li><strong>Cơ chế:</strong> Thống kê luồng để đo độ "hỗn loạn" của IP/Cổng.</li>
+    <li><strong>Lợi ích:</strong> Phát hiện nhanh (DDoS, Port Scan...) mà không cần giải mã gói tin.</li>
+  </ul>
 </div>
 
 ---

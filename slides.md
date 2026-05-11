@@ -3,8 +3,7 @@
 # PATH: /home/nora/Projects/slides/SDN-IDS/slides.md
 # DESC: Main entry — SDN-IDS Academic Presentation
 theme: default
-title: 'Phát hiện và ngăn chặn tấn công mạng dựa trên SDN sử dụng Entropy'
-titleTemplate: '%s — SDN-IDS'
+title: 'SDN-IDS'
 author: 'SDN-IDS Research Team'
 keywords: 'SDN, IDS, DDoS, Entropy, OpenFlow, Ryu, Mininet'
 info: |
@@ -20,8 +19,8 @@ canvasWidth: 980
 mermaid:
   theme: default
 fonts:
-  sans: Outfit
-  serif: Inter
+  sans: Inter
+  serif: Merriweather
   mono: JetBrains Mono
   provider: google
 drawings:
@@ -32,10 +31,9 @@ layout: none
 ---
 
 <CoverSlide
-  badge="Đồ án chuyên ngành"
-  advisor="TS. Nguyễn Văn A"
-  student="Nguyễn Văn B — MSSV: 2012345"
-  year="2025 – 2026"
+  badge="CHUYÊN ĐỀ MẠNG MÁY TÍNH 1"
+  advisor="Trần Vĩnh Phúc"
+  :student="['Nguyễn Bá Thiều Khôi Nguyên — MSSV: 2312702', 'Hồ Quốc Long — MSSV: 2312675']"
 />
 
 ---
@@ -43,56 +41,56 @@ layout: content-card
 transition: slide-left
 ---
 
-# 📋 Nội dung báo cáo
+# 📋 NỘI DUNG BÁO CÁO
 
 <div class="divider"></div>
 
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 14px;">
+<div v-click style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 14px;">
 
-<div v-click class="glass-card" style="padding:14px 18px;">
+<div class="glass-card" style="padding:14px 18px;">
 <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
 <span class="badge">01</span>
-<strong style="font-size:0.85rem;color:var(--sdn-text-primary);">Mở đầu & Phạm vi</strong>
+<strong style="font-size:0.85rem;color:var(--sdn-text-primary);font-weight:800;">MỞ ĐẦU & PHẠM VI ĐỀ TÀI</strong>
 </div>
 <p style="font-size:0.75rem;">Lý do, mục tiêu, phạm vi, đối tượng, phương pháp</p>
 </div>
 
-<div v-click class="glass-card" style="padding:14px 18px;">
+<div class="glass-card" style="padding:14px 18px;">
 <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
 <span class="badge badge-accent">02</span>
-<strong style="font-size:0.85rem;color:var(--sdn-text-primary);">Cơ sở Lý thuyết</strong>
+<strong style="font-size:0.85rem;color:var(--sdn-text-primary);font-weight:800;">CƠ SỞ LÝ THUYẾT</strong>
 </div>
 <p style="font-size:0.75rem;">Công nghệ, nghiên cứu liên quan, SDN, Entropy</p>
 </div>
 
-<div v-click class="glass-card" style="padding:14px 18px;">
+<div class="glass-card" style="padding:14px 18px;">
 <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
 <span class="badge badge-success">03</span>
-<strong style="font-size:0.85rem;color:var(--sdn-text-primary);">Phân tích & Thiết kế</strong>
+<strong style="font-size:0.85rem;color:var(--sdn-text-primary);font-weight:800;">PHÂN TÍCH & THIẾT KẾ HỆ THỐNG</strong>
 </div>
 <p style="font-size:0.75rem;">Yêu cầu, use case, kiến trúc, CSDL, sequence diagram</p>
 </div>
 
-<div v-click class="glass-card" style="padding:14px 18px;">
+<div class="glass-card" style="padding:14px 18px;">
 <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
 <span class="badge badge-warning">04</span>
-<strong style="font-size:0.85rem;color:var(--sdn-text-primary);">Cài đặt & Hiện thực</strong>
+<strong style="font-size:0.85rem;color:var(--sdn-text-primary);font-weight:800;">CÀI ĐẶT & THỰC HIỆN</strong>
 </div>
 <p style="font-size:0.75rem;">Môi trường, cấu trúc dự án, code, screenshots</p>
 </div>
 
-<div v-click class="glass-card" style="padding:14px 18px;">
+<div class="glass-card" style="padding:14px 18px;">
 <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
 <span class="badge badge-danger">05</span>
-<strong style="font-size:0.85rem;color:var(--sdn-text-primary);">Kiểm thử & Đánh giá</strong>
+<strong style="font-size:0.85rem;color:var(--sdn-text-primary);font-weight:800;">KIỂM THỬ & ĐÁNH GIÁ </strong>
 </div>
 <p style="font-size:0.75rem;">Test cases, hiệu năng, nhận xét kết quả</p>
 </div>
 
-<div v-click class="glass-card" style="padding:14px 18px;">
+<div class="glass-card" style="padding:14px 18px;">
 <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
 <span class="badge" style="background:rgba(139,92,246,0.15);color:#a78bfa;border-color:rgba(139,92,246,0.25);">06</span>
-<strong style="font-size:0.85rem;color:var(--sdn-text-primary);">Kết luận & Phát triển</strong>
+<strong style="font-size:0.85rem;color:var(--sdn-text-primary);font-weight:800;">KẾT LUẬN & PHÁT TRIỂN</strong>
 </div>
 <p style="font-size:0.75rem;">Tổng kết, ưu/nhược, hướng phát triển, bài học</p>
 </div>
