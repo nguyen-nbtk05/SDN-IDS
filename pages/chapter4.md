@@ -1,64 +1,47 @@
 ---
 # FILE: pages/chapter4.md
 # PATH: /home/nora/Projects/slides/SDN-IDS/pages/chapter4.md
-# DESC: Chương 4 - Cài đặt và Hiện thực
+# DESC: Chương 4 - Triển khai Thực nghiệm và Đánh giá
 layout: chapter
 chapterNumber: 4
 transition: slide-left
 ---
 
-# Chương 4
+# CHƯƠNG 4: TRIỂN KHAI THỰC NGHIỆM VÀ ĐÁNH GIÁ
 
-## Cài đặt và Hiện thực
+## Môi trường, triển khai, kiểm thử và nhận xét kết quả
 
-Môi trường, cấu trúc dự án và triển khai các chức năng chính
+- Trình bày môi trường phát triển và cấu trúc mạng thực nghiệm.
+- Mô tả cách triển khai các mô-đun chính của hệ thống IDS.
+- Xây dựng kịch bản kiểm thử DDoS, dò quét cổng và giả mạo ARP.
+- Đánh giá khả năng phát hiện, ngăn chặn và ghi nhận cảnh báo.
 
 ---
 layout: content-card
 transition: slide-left
 ---
 
-# 4.1 Môi trường phát triển
+# Môi trường phát triển
 
 <div class="divider"></div>
 
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 12px;">
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:14px;">
 
-<GlassBox title="Phần cứng" icon="i-twemoji-desktop-computer">
+<GlassBox title="Nền tảng triển khai" compact>
 
-<v-clicks>
-
-- **CPU**: Intel Core i5-12400 (6 cores)
-- **RAM**: 16 GB DDR4
-- **Storage**: SSD 256 GB
-- **Network**: NIC 1 Gbps
-
-</v-clicks>
+- Hệ điều hành Linux hoặc máy ảo phục vụ chạy Mininet.
+- Bộ điều khiển Ryu chạy ứng dụng phát hiện xâm nhập.
+- Mininet và Open vSwitch mô phỏng mạng SDN.
+- Python được dùng để xây dựng mô-đun xử lý và kịch bản mạng.
 
 </GlassBox>
 
-<GlassBox title="Phần mềm" icon="i-twemoji-laptop">
+<GlassBox title="Công cụ kiểm thử" compact>
 
-<v-clicks>
-
-- **OS**: Ubuntu 22.04 LTS (64-bit)
-- **Python**: 3.10.12
-- **Ryu**: 4.34 (SDN Controller)
-- **Mininet**: 2.3.1 (Network Emulator)
-- **Open vSwitch**: 2.17.x
-- **hping3**: 3.0.0-alpha (Attack Tool)
-
-</v-clicks>
-
-</GlassBox>
-
-</div>
-
-<div v-click style="margin-top: 12px;">
-
-<GlassBox title="Yêu cầu tối thiểu" icon="i-twemoji-high-voltage" compact>
-
-- **RAM ≥ 8GB** (Mininet + Controller chiếm ~2GB), **Python ≥ 3.8**, **Ubuntu ≥ 20.04**
+- `hping3`: tạo lưu lượng kiểm thử DDoS.
+- `nmap`: kiểm tra kịch bản dò quét cổng.
+- `arpspoof`: kiểm thử giả mạo ARP.
+- Bản ghi nhật ký trên thiết bị đầu cuối dùng để theo dõi cảnh báo.
 
 </GlassBox>
 
@@ -69,170 +52,299 @@ layout: content-card
 transition: slide-left
 ---
 
-# 4.2 Cấu trúc thư mục dự án
+# Cấu trúc mạng thực nghiệm
 
 <div class="divider"></div>
 
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 10px;">
+<div style="display:grid;grid-template-columns:0.95fr 1.05fr;gap:18px;margin-top:10px;align-items:start;">
+
+<div>
+
+- Mạng được xây dựng trong Mininet theo cấu trúc liên kết hình sao.
+- Các máy trạm gồm nhóm tấn công, nhóm nạn nhân và nhóm người dùng hợp lệ.
+- Các máy kết nối qua thiết bị chuyển mạch OpenFlow.
+- Bộ điều khiển Ryu quản lý thiết bị chuyển mạch và thu thập thống kê.
+- Cấu trúc mạng hỗ trợ sinh lưu lượng bình thường và lưu lượng tấn công.
+
+</div>
+
+<div>
+
+```mermaid {scale: 0.56}
+flowchart TB
+  C["Bộ điều khiển Ryu"]
+  S["Thiết bị chuyển mạch OpenFlow"]
+  V["Máy nạn nhân"]
+  B["Người dùng hợp lệ"]
+  A["Máy tấn công"]
+  C <-->|"OpenFlow"| S
+  S --- V
+  S --- B
+  S --- A
+```
+
+</div>
+
+</div>
+
+---
+layout: content-card
+transition: slide-left
+---
+
+# Cấu trúc thư mục dự án
+
+<div class="divider"></div>
+
+<div style="display:grid;grid-template-columns:1.05fr 0.95fr;gap:18px;margin-top:10px;">
 
 <div>
 
 ```text
 SDN-IDS/
-├── controller/
-│   ├── simple_switch_13.py    # L2 Switch App
-│   └── rest_api.py            # REST API extension
-├── ids/
-│   ├── ids_detector.py        # Main IDS module
-│   ├── entropy_engine.py      # Shannon Entropy
-│   ├── flow_collector.py      # Flow Stats polling
-│   └── mitigation.py          # Drop rule handler
-├── topology/
-│   ├── custom_topo.py         # Mininet topology
-│   └── topo_config.yaml       # Topo parameters
-├── tests/
-│   ├── test_entropy.py        # Unit tests
-│   ├── test_collector.py      # Integration tests
-│   └── test_attack.sh         # Attack scripts
-├── logs/
-│   └── ids_alerts.csv         # Alert log output
-├── requirements.txt
-└── README.md
+├── src/
+│   ├── topology.py
+│   ├── ids_detector.py
+│   ├── arp_monitor.py
+│   ├── mitigation.py
+│   ├── test_ids.py
+│   └── topology_viewer.py
+├── scripts/
+│   ├── ddos.sh
+│   ├── port_scan.sh
+│   └── arp_spoofing.sh
+├── alerts.log
+├── test_results.json
+└── pyproject.toml
 ```
+
+</div>
+
+<GlassBox title="Vai trò chính" compact>
+
+- `topology.py`: định nghĩa cấu trúc mạng Mininet.
+- `ids_detector.py`: xử lý thống kê, Entropy và bất thường.
+- `arp_monitor.py`: giám sát ràng buộc MAC-IP.
+- `mitigation.py`: cài đặt cơ chế ngăn chặn.
+- `alerts.log`: lưu cảnh báo và kết quả xử lý.
+
+</GlassBox>
+
+</div>
+
+---
+layout: content-card
+transition: slide-left
+---
+
+# Luồng dữ liệu khi hệ thống vận hành
+
+<div class="divider"></div>
+
+<div style="margin-top:12px;">
+
+```mermaid {scale: 0.6}
+flowchart LR
+  H["Máy trạm<br/>sinh lưu lượng"]
+  S["Thiết bị chuyển mạch<br/>cập nhật bộ đếm"]
+  C["Bộ điều khiển Ryu<br/>thu thập thống kê"]
+  W["Cửa sổ<br/>thời gian trượt"]
+  E["Tính Entropy<br/>và so sánh ngưỡng"]
+  M["Gửi luật<br/>loại bỏ"]
+  L["Ghi cảnh báo<br/>nhật ký"]
+  H --> S --> C --> W --> E
+  E -- "Bất thường" --> M --> S
+  E --> L
+```
+
+</div>
+
+---
+layout: content-card
+transition: slide-left
+---
+
+# Cài đặt thuật toán Shannon Entropy
+
+<div class="divider"></div>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:10px;">
+
+<div>
+
+- Đầu vào là tập giá trị đặc trưng trong một cửa sổ thời gian.
+- Tần suất xuất hiện của từng giá trị được chuyển thành xác suất.
+- Entropy phản ánh mức độ phân tán của lưu lượng.
+- Kết quả được dùng để so sánh với ngưỡng an toàn.
+
+</div>
+
+<GlassBox title="Công thức và giả mã" compact>
+
+$$
+H(X) = -\sum_{i=1}^{n} p(x_i)\log_2 p(x_i)
+$$
+
+```text
+đếm tần suất từng giá trị
+tính xác suất p(x_i)
+cộng -p(x_i) * log2(p(x_i))
+trả về H(X)
+```
+
+</GlassBox>
+
+</div>
+
+---
+layout: content-card
+transition: slide-left
+---
+
+# Cửa sổ thời gian trượt trong triển khai
+
+<div class="divider"></div>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:14px;">
+
+<GlassBox title="Cách tổ chức dữ liệu" compact>
+
+- Dữ liệu thống kê được thu thập theo chu kỳ.
+- Mỗi chu kỳ đóng vai trò là một cửa sổ quan sát.
+- Hệ thống phân tích phần lưu lượng mới phát sinh thay vì toàn bộ dữ liệu cũ.
+
+</GlassBox>
+
+<GlassBox title="Ý nghĩa triển khai" compact>
+
+- Giảm chi phí xử lý trên bộ điều khiển.
+- Phản ánh trạng thái lưu lượng gần thời điểm hiện tại.
+- Phù hợp với yêu cầu phát hiện gần thời gian thực.
+
+</GlassBox>
+
+</div>
+
+---
+layout: content-card
+transition: slide-left
+---
+
+# Phát hiện DDoS trong triển khai
+
+<div class="divider"></div>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:14px;">
+
+<GlassBox title="Theo dõi bất thường" compact>
+
+- Giám sát số lượng gói tin và mức phân tán của IP nguồn.
+- Lưu lượng tăng đột biến hoặc IP nguồn phân tán bất thường tạo cảnh báo.
+- Kết quả phân tích được cập nhật theo cửa sổ thời gian.
+
+</GlassBox>
+
+<GlassBox title="Kích hoạt ngăn chặn" compact>
+
+- Nguồn nghi vấn hoặc luồng độc hại được đưa vào cơ chế ngăn chặn.
+- Luật loại bỏ được cài xuống thiết bị chuyển mạch.
+- Cách xử lý này giảm tải cho bộ điều khiển và máy nạn nhân.
+
+</GlassBox>
+
+</div>
+
+---
+layout: content-card
+transition: slide-left
+---
+
+# Phát hiện dò quét cổng trong triển khai
+
+<div class="divider"></div>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:14px;">
+
+<GlassBox title="Dữ liệu quan sát" compact>
+
+- Ghi nhận số lượng cổng đích mà một IP nguồn truy cập.
+- Nhiều kết nối ngắn đến nhiều cổng là dấu hiệu nghi vấn.
+- Entropy hoặc số lượng cổng đích được dùng để xác định bất thường.
+
+</GlassBox>
+
+<GlassBox title="Phản ứng" compact>
+
+- Khi vượt ngưỡng, hệ thống sinh cảnh báo dò quét cổng.
+- Nguồn nghi vấn được chuyển sang mô-đun ngăn chặn.
+- Luật chặn được áp dụng phù hợp với nguồn vi phạm.
+
+</GlassBox>
+
+</div>
+
+---
+layout: content-card
+transition: slide-left
+---
+
+# Phát hiện và ngăn chặn giả mạo ARP
+
+<div class="divider"></div>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:14px;">
+
+<GlassBox title="Kiểm tra ràng buộc" compact>
+
+- Duy trì bảng ánh xạ MAC-IP tin cậy.
+- Bản tin ARP mới được kiểm tra với bảng ánh xạ này.
+- Nếu một IP xuất hiện với MAC không hợp lệ, hệ thống xác định nguy cơ giả mạo.
+
+</GlassBox>
+
+<GlassBox title="Bảo vệ tầng liên kết" compact>
+
+- Cảnh báo được ghi nhận vào bản ghi nhật ký.
+- Nguồn vi phạm có thể bị cô lập khỏi mạng nội bộ.
+- Cơ chế này bảo vệ tầng liên kết dữ liệu trong môi trường SDN.
+
+</GlassBox>
+
+</div>
+
+---
+layout: content-card
+transition: slide-left
+---
+
+# Cơ chế ngăn chặn tự động
+
+<div class="divider"></div>
+
+<div style="display:grid;grid-template-columns:0.95fr 1.05fr;gap:18px;margin-top:10px;align-items:start;">
+
+<div>
+
+- Khi phát hiện nguồn độc hại, hệ thống tạo luật loại bỏ.
+- Luật được gửi xuống thiết bị chuyển mạch bằng bản tin Flow-Mod.
+- Luật có độ ưu tiên cao để chặn trước các luật chuyển tiếp thông thường.
+- Lưu lượng độc hại bị loại bỏ ngay tại mặt phẳng dữ liệu.
+- Bộ điều khiển giảm tải vì không phải xử lý lặp lại cùng nguồn tấn công.
 
 </div>
 
 <div>
 
-<GlassBox title="Mô tả module" icon="i-twemoji-package" compact>
-
-<v-clicks>
-
-- **controller/** — Ứng dụng Ryu Controller cơ bản (L2 switch + REST)
-- **ids/** — Core IDS: thu thập, phân tích, phản ứng
-- **topology/** — Định nghĩa mạng Mininet
-- **tests/** — Test scripts (unit + integration + attack)
-- **logs/** — Output logs & alerts
-
-</v-clicks>
-
-</GlassBox>
-
-</div>
-
-</div>
-
----
-layout: content-card
-transition: slide-left
----
-
-# 4.3 Cài đặt chức năng chính — Entropy Engine
-
-<div class="divider"></div>
-
-```python {1|3-5|7-18|20-24|all}
-# FILE: ids/entropy_engine.py — Module tính Shannon Entropy
-
-import math
-from collections import Counter
-from typing import List, Tuple
-
-def calculate_entropy(ip_list: List[str]) -> float:
-    """
-    Tính Shannon Entropy cho danh sách source IP.
-    H(X) = -Σ p(x) * log2(p(x))
-    Returns: entropy value (float)
-    """
-    if not ip_list:
-        return 0.0
-    total = len(ip_list)
-    counter = Counter(ip_list)
-    entropy = -sum(
-        (count / total) * math.log2(count / total)
-        for count in counter.values()
-    )
-    return round(entropy, 4)
-
-def is_attack(entropy: float, threshold: float = 1.0) -> bool:
-    """Kiểm tra entropy có dưới ngưỡng tấn công không."""
-    return entropy < threshold
+```mermaid {scale: 0.54}
+flowchart TB
+  A["Phát hiện nguồn độc hại"]
+  B["Tạo luật loại bỏ"]
+  C["Gửi bản tin Flow-Mod"]
+  D["Cài vào bảng luồng"]
+  E["Loại bỏ tại mặt phẳng dữ liệu"]
+  A --> B --> C --> D --> E
 ```
 
-<div v-click style="margin-top: 8px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
-  <MetricCard icon="i-twemoji-bar-chart" value="O(n)" label="Complexity" variant="primary" />
-  <MetricCard icon="i-twemoji-direct-hit" value="1.0" label="Threshold" variant="warning" />
-  <MetricCard icon="i-twemoji-stopwatch" value="< 1ms" label="Calc Time" variant="success" />
-</div>
-
----
-layout: content-card
-transition: slide-left
----
-
-# 4.3 Cài đặt chức năng chính — Flow Collector
-
-<div class="divider"></div>
-
-```python {1|3-6|8-22|all}
-# FILE: ids/flow_collector.py — Module polling flow statistics
-
-import requests
-import time
-from collections import deque
-from entropy_engine import calculate_entropy, is_attack
-
-class FlowCollector:
-    def __init__(self, controller_url="http://127.0.0.1:8080", dpid=1):
-        self.url = f"{controller_url}/stats/flow/{dpid}"
-        self.prev_counts = {}          # State persistence
-        self.window = deque(maxlen=4)   # Sliding window 20s
-
-    def poll(self):
-        """Thu thập flow stats và tính delta packets."""
-        resp = requests.get(self.url, timeout=5)
-        flows = resp.json().get(str(self.dpid), [])
-        current = {}
-        for flow in flows:
-            key = (flow['match'].get('ipv4_src', 'unknown'),)
-            current[key] = flow['packet_count']
-        # Tính delta
-        deltas = {k: current[k] - self.prev_counts.get(k, 0)
-                  for k in current}
-        self.prev_counts = current.copy()
-        return deltas
-```
-
----
-layout: content-card
-transition: slide-left
----
-
-# 4.4 Minh họa hệ thống — Entropy Chart
-
-<div class="divider"></div>
-
-<div style="margin-top: 8px;">
-
-<EntropyChart :width="700" />
-
-</div>
-
-<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 12px;">
-
-<div v-click class="glass-card" style="padding:10px 14px; text-align:center;">
-  <div style="font-size:0.7rem;font-weight:700;color:var(--sdn-success);text-transform:uppercase;">Trạng thái bình thường</div>
-  <p style="font-size:0.72rem;margin-top:4px;">H ≈ 3.0 — Traffic phân bố đều, nhiều source IPs</p>
-</div>
-
-<div v-click class="glass-card" style="padding:10px 14px; text-align:center;">
-  <div style="font-size:0.7rem;font-weight:700;color:var(--sdn-warning);text-transform:uppercase;">Ngưỡng cảnh báo</div>
-  <p style="font-size:0.72rem;margin-top:4px;">H = 1.0 — Threshold, bắt đầu phát hiện bất thường</p>
-</div>
-
-<div v-click class="glass-card" style="padding:10px 14px; text-align:center;">
-  <div style="font-size:0.7rem;font-weight:700;color:var(--sdn-danger);text-transform:uppercase;">Trạng thái tấn công</div>
-  <p style="font-size:0.72rem;margin-top:4px;">H → 0 — DDoS SYN Flood, traffic tập trung vào 1 target</p>
 </div>
 
 </div>
@@ -242,39 +354,133 @@ layout: content-card
 transition: slide-left
 ---
 
-# 4.5 Xử lý lỗi & Bảo mật
+# Các kịch bản kiểm thử
 
 <div class="divider"></div>
 
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 12px;">
+<div style="margin-top:10px;">
 
-<GlassBox title="Xử lý ngoại lệ" icon="i-twemoji-shield">
+| Kịch bản | Mục tiêu | Dấu hiệu cần quan sát | Kết quả mong đợi |
+|---|---|---|---|
+| Lưu lượng bình thường | Kiểm tra không cảnh báo sai | Entropy ổn định | Không cài luật chặn |
+| DDoS | Phát hiện lưu lượng tăng đột biến | IP nguồn hoặc tốc độ gói tin bất thường | Cảnh báo và chặn nguồn độc hại |
+| Dò quét cổng | Phát hiện truy cập nhiều cổng | Cổng đích phân tán bất thường | Cảnh báo và áp dụng luật chặn |
+| Giả mạo ARP | Kiểm tra đối chiếu MAC-IP | Ánh xạ sai lệch | Cảnh báo và cô lập nguồn giả mạo |
 
-<v-clicks>
+</div>
 
-- **Network Timeout**: Retry 3 lần với exponential backoff
-- **JSON Parse Error**: Graceful fallback, log warning
-- **Division by Zero**: Guard trong entropy calculation
-- **Controller Down**: Health check mỗi 30s, auto-reconnect
-- **Memory Overflow**: deque(maxlen=4) tự quản lý buffer
+---
+layout: content-card
+transition: slide-left
+---
 
-</v-clicks>
+# Tiêu chí đánh giá
+
+<div class="divider"></div>
+
+<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:14px;">
+
+<GlassBox title="Khả năng phát hiện" compact>
+
+- Phát hiện đúng loại tấn công trong từng kịch bản.
+- Thời gian từ bất thường đến cảnh báo cần ngắn.
+- Tỷ lệ cảnh báo nhầm được xem xét khi có lưu lượng hợp lệ tăng đột biến.
 
 </GlassBox>
 
-<GlassBox title="Bảo mật hệ thống" icon="i-twemoji-locked">
+<GlassBox title="Khả năng phản ứng" compact>
 
-<v-clicks>
-
-- **Controller Access**: Chỉ cho phép kết nối từ localhost
-- **API Authentication**: Token-based cho REST API
-- **Flow Rule Validation**: Kiểm tra integrity trước khi install
-- **Rate Limiting**: Giới hạn số drop rules/phút
-- **Audit Log**: Ghi lại mọi hành động mitigation
-
-</v-clicks>
+- Cài đặt luật chặn tự động sau khi phát hiện.
+- Hạn chế ảnh hưởng đến lưu lượng hợp lệ.
+- Bộ điều khiển duy trì ổn định khi có tấn công.
 
 </GlassBox>
 
 </div>
 
+---
+layout: content-card
+transition: slide-left
+---
+
+# Kết quả thực nghiệm
+
+<div class="divider"></div>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:14px;">
+
+<GlassBox title="Kết quả quan sát" compact>
+
+- Hệ thống phát hiện được biến động bất thường trong các kịch bản kiểm thử.
+- Entropy phù hợp với DDoS và dò quét cổng nhờ khả năng đo mức phân tán lưu lượng.
+- Đối chiếu MAC-IP hỗ trợ phát hiện giả mạo ARP.
+
+</GlassBox>
+
+<GlassBox title="Nhận định thận trọng" compact>
+
+- Luật loại bỏ được cài xuống thiết bị chuyển mạch để ngăn lưu lượng độc hại.
+- Cần tiếp tục tinh chỉnh ngưỡng để giảm cảnh báo nhầm.
+- Trường hợp lưu lượng hợp lệ tăng đột biến vẫn cần được đánh giá thêm.
+
+</GlassBox>
+
+</div>
+
+---
+layout: content-card
+transition: slide-left
+---
+
+# Nhận xét sau thực nghiệm
+
+<div class="divider"></div>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:14px;">
+
+<GlassBox title="Điểm phù hợp" compact>
+
+- Thống kê luồng giúp giảm chi phí xử lý so với kiểm tra sâu gói tin.
+- Xử lý tại bộ điều khiển cho phép phản hồi tập trung và linh hoạt.
+- Luật loại bỏ ở mặt phẳng dữ liệu giúp giảm tải cho bộ điều khiển.
+
+</GlassBox>
+
+<GlassBox title="Giới hạn cần lưu ý" compact>
+
+- Hạn chế chính nằm ở việc lựa chọn ngưỡng phát hiện.
+- Mininet phù hợp cho kiểm chứng ban đầu nhưng chưa thay thế mạng thực tế.
+- Cần đánh giá thêm trên quy mô lớn hơn hoặc thiết bị SDN vật lý.
+
+</GlassBox>
+
+</div>
+
+---
+layout: content-card
+transition: slide-left
+---
+
+# Tổng kết Chương 4
+
+<div class="divider"></div>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:14px;">
+
+<GlassBox title="Triển khai" compact>
+
+- Chương 4 đã trình bày môi trường và cấu trúc mạng thực nghiệm.
+- Các mô-đun chính được triển khai trên nền Ryu và Mininet.
+- Kịch bản kiểm thử gồm DDoS, dò quét cổng và giả mạo ARP.
+
+</GlassBox>
+
+<GlassBox title="Đánh giá" compact>
+
+- Kết quả cho thấy thống kê luồng kết hợp Entropy có tính khả thi trong SDN.
+- Cơ chế đối chiếu MAC-IP bổ sung cho phát hiện giả mạo ARP.
+- Các hạn chế thực nghiệm là cơ sở cho hướng phát triển ở Chương 5.
+
+</GlassBox>
+
+</div>

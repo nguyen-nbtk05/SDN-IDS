@@ -74,25 +74,17 @@ transition: slide-left
 <div class="glass-card" style="padding:14px 18px;">
 <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
 <span class="badge badge-warning">04</span>
-<strong style="font-size:0.85rem;color:var(--sdn-text-primary);font-weight:800;">CÀI ĐẶT & THỰC HIỆN</strong>
+<strong style="font-size:0.85rem;color:var(--sdn-text-primary);font-weight:800;">TRIỂN KHAI & ĐÁNH GIÁ</strong>
 </div>
-<p style="font-size:0.75rem;">Môi trường, cấu trúc dự án, code, screenshots</p>
+<p style="font-size:0.75rem;">Môi trường, triển khai, kịch bản kiểm thử, nhận xét</p>
 </div>
 
 <div class="glass-card" style="padding:14px 18px;">
 <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
 <span class="badge badge-danger">05</span>
-<strong style="font-size:0.85rem;color:var(--sdn-text-primary);font-weight:800;">KIỂM THỬ & ĐÁNH GIÁ </strong>
+<strong style="font-size:0.85rem;color:var(--sdn-text-primary);font-weight:800;">KẾT LUẬN & HƯỚNG PHÁT TRIỂN</strong>
 </div>
-<p style="font-size:0.75rem;">Test cases, hiệu năng, nhận xét kết quả</p>
-</div>
-
-<div class="glass-card" style="padding:14px 18px;">
-<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
-<span class="badge" style="background:rgba(139,92,246,0.15);color:#a78bfa;border-color:rgba(139,92,246,0.25);">06</span>
-<strong style="font-size:0.85rem;color:var(--sdn-text-primary);font-weight:800;">KẾT LUẬN & PHÁT TRIỂN</strong>
-</div>
-<p style="font-size:0.75rem;">Tổng kết, ưu/nhược, hướng phát triển, bài học</p>
+<p style="font-size:0.75rem;">Kết quả đạt được, ưu điểm, hạn chế, hướng mở rộng</p>
 </div>
 
 </div>
@@ -115,10 +107,6 @@ src: ./pages/chapter4.md
 
 ---
 src: ./pages/chapter5.md
----
-
----
-src: ./pages/chapter6.md
 ---
 
 ---

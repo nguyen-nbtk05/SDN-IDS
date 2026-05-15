@@ -1,158 +1,190 @@
 ---
 # FILE: pages/chapter5.md
 # PATH: /home/nora/Projects/slides/SDN-IDS/pages/chapter5.md
-# DESC: Chương 5 - Kiểm thử và Đánh giá
+# DESC: Chương 5 - Kết luận và Hướng phát triển
 layout: chapter
 chapterNumber: 5
 transition: slide-left
 ---
 
-# Chương 5
+# CHƯƠNG 5: KẾT LUẬN VÀ HƯỚNG PHÁT TRIỂN
 
-## Kiểm thử và Đánh giá
+## Kết quả, ưu điểm, hạn chế và định hướng mở rộng
 
-Chiến lược kiểm thử, test cases, hiệu năng và kết quả
-
----
-layout: content-card
-transition: slide-left
----
-
-# 5.1 Chiến lược kiểm thử
-
-<div class="divider"></div>
-
-<div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 14px;">
-
-<div v-click class="glass-card" style="padding:14px; text-align:center;">
-  <div style="font-size:1.5rem;margin-bottom:6px;">🧪</div>
-  <strong style="font-size:0.78rem;color:var(--sdn-primary-light);">Unit Test</strong>
-  <p style="font-size:0.7rem;margin-top:4px;">Kiểm thử từng hàm riêng lẻ: entropy calc, delta computation</p>
-  <div class="badge" style="margin-top:6px;font-size:0.6rem;">pytest</div>
-</div>
-
-<div v-click class="glass-card" style="padding:14px; text-align:center;">
-  <div style="font-size:1.5rem;margin-bottom:6px;">🔗</div>
-  <strong style="font-size:0.78rem;color:var(--sdn-accent-light);">Integration Test</strong>
-  <p style="font-size:0.7rem;margin-top:4px;">Kiểm thử tương tác giữa Collector → Entropy → Mitigation</p>
-  <div class="badge badge-accent" style="margin-top:6px;font-size:0.6rem;">pytest + mock</div>
-</div>
-
-<div v-click class="glass-card" style="padding:14px; text-align:center;">
-  <div style="font-size:1.5rem;margin-bottom:6px;"><twemoji-desktop-computer /></div>
-  <strong style="font-size:0.78rem;color:var(--sdn-success);">System Test</strong>
-  <p style="font-size:0.7rem;margin-top:4px;">Chạy toàn bộ hệ thống trên Mininet + Ryu + hping3</p>
-  <div class="badge badge-success" style="margin-top:6px;font-size:0.6rem;">Mininet + hping3</div>
-</div>
-
-<div v-click class="glass-card" style="padding:14px; text-align:center;">
-  <div style="font-size:1.5rem;margin-bottom:6px;">👤</div>
-  <strong style="font-size:0.78rem;color:var(--sdn-warning);">UAT</strong>
-  <p style="font-size:0.7rem;margin-top:4px;">Kiểm thử với kịch bản tấn công thực tế từ nhiều nguồn</p>
-  <div class="badge badge-warning" style="margin-top:6px;font-size:0.6rem;">Manual</div>
-</div>
-
-</div>
+- Tổng hợp các kết quả đạt được của đề tài.
+- Đánh giá ưu điểm và hạn chế của mô hình.
+- Đề xuất hướng cải tiến cho nghiên cứu và triển khai thực tế.
 
 ---
 layout: content-card
 transition: slide-left
 ---
 
-# 5.2 Bảng Test Case
+# Kết quả đạt được
 
 <div class="divider"></div>
 
-<div style="margin-top: 10px; font-size: 0.78rem;">
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:14px;">
 
-| Mã | Chức năng | Dữ liệu đầu vào | Kết quả mong đợi | Thực tế | Status |
-|---|---|---|---|---|---|
-| TC-01 | Entropy đồng đều | 100 IP khác nhau | H ≈ 6.64 | H = 6.6439 | <twemoji-white-heavy-check-mark /> Pass |
-| TC-02 | Entropy 1 IP | 100 packets cùng IP | H = 0.0 | H = 0.0 | <twemoji-white-heavy-check-mark /> Pass |
-| TC-03 | Entropy threshold | H = 0.95 | is_attack = True | True | <twemoji-white-heavy-check-mark /> Pass |
-| TC-04 | Delta packets | count(t)=100, prev=80 | delta = 20 | delta = 20 | <twemoji-white-heavy-check-mark /> Pass |
-| TC-05 | API timeout | Controller offline | Retry 3x → Error log | Đúng | <twemoji-white-heavy-check-mark /> Pass |
-| TC-06 | SYN Flood detect | hping3 --flood | Alert < 10s | Alert ≈ 7s | <twemoji-white-heavy-check-mark /> Pass |
-| TC-07 | Auto drop rule | Entropy < 1.0 | Flow rule installed | Installed | <twemoji-white-heavy-check-mark /> Pass |
-| TC-08 | Normal traffic | iperf giữa hosts | Không alert | Không alert | <twemoji-white-heavy-check-mark /> Pass |
-| TC-09 | Window overflow | > 4 samples | Oldest dropped | Đúng | <twemoji-white-heavy-check-mark /> Pass |
-| TC-10 | Recovery | Stop attack | Entropy phục hồi | H > 2.5 | <twemoji-white-heavy-check-mark /> Pass |
+<GlassBox title="Nền tảng và mô hình" compact>
 
-</div>
-
----
-layout: content-card
-transition: slide-left
----
-
-# 5.3 Đánh giá hiệu năng
-
-<div class="divider"></div>
-
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 10px;">
-
-<div>
-
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-  <MetricCard v-click icon="i-twemoji-high-voltage" value="~7s" label="Detection Time" description="Từ khi bắt đầu tấn công" variant="primary" />
-  <MetricCard v-click icon="i-twemoji-direct-hit" value="96.5%" label="Accuracy" description="True Positive Rate" variant="success" />
-  <MetricCard v-click icon="i-twemoji-warning" value="3.2%" label="False Positive" description="Dưới ngưỡng 5%" variant="warning" />
-  <MetricCard v-click icon="i-twemoji-brain" value="18%" label="CPU Usage" description="Controller average" variant="accent" />
-</div>
-
-</div>
-
-<div>
-
-<FlowStats :width="400" />
-
-<p v-click style="font-size:0.75rem; color:var(--sdn-text-muted); margin-top:8px; text-align:center;">
-  Biểu đồ phân bố flow entries theo protocol trong quá trình kiểm thử
-</p>
-
-</div>
-
-</div>
-
----
-layout: content-card
-transition: slide-left
----
-
-# 5.4 Nhận xét kết quả kiểm thử
-
-<div class="divider"></div>
-
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 12px;">
-
-<GlassBox title="<twemoji-white-heavy-check-mark /> Kết quả đạt được" icon="">
-
-<v-clicks>
-
-- **10/10 test cases** PASS thành công
-- Phát hiện SYN Flood trong **~7 giây** (< 10s mục tiêu)
-- **Accuracy 96.5%**, vượt mục tiêu 95%
-- **False Positive 3.2%**, dưới ngưỡng 5%
-- Tự động install drop rule **hoạt động ổn định**
-- Entropy **phục hồi** sau khi tấn công kết thúc
-
-</v-clicks>
+- Nghiên cứu cơ sở lý thuyết về SDN, OpenFlow, bộ điều khiển Ryu và Mininet.
+- Xây dựng mô hình IDS dựa trên thống kê luồng và Shannon Entropy.
+- Mô phỏng cấu trúc mạng thực nghiệm với nhóm tấn công, nạn nhân và người dùng hợp lệ.
 
 </GlassBox>
 
-<GlassBox title="⚠️ Vấn đề phát sinh" icon="">
+<GlassBox title="Phát hiện và ngăn chặn" compact>
 
-<v-clicks>
-
-- **Burst traffic** (iperf bandwidth test) gây false positive nhẹ (3.2%)
-- **Polling interval 5s** có thể miss tấn công ngắn (< 5s)
-- **Single controller** → bottleneck khi scale nhiều switch
-- **Entropy threshold** cần fine-tune theo môi trường thực tế
-- **Khắc phục**: Điều chỉnh threshold, thêm whitelist, adaptive polling
-
-</v-clicks>
+- Phát hiện các hành vi bất thường như DDoS, dò quét cổng và giả mạo ARP.
+- Triển khai cơ chế ngăn chặn tự động bằng luật loại bỏ trên thiết bị chuyển mạch.
+- Ghi nhận cảnh báo phục vụ theo dõi và đánh giá.
 
 </GlassBox>
 
 </div>
 
+---
+layout: content-card
+transition: slide-left
+---
+
+# Ưu điểm của giải pháp
+
+<div class="divider"></div>
+
+<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:14px;">
+
+<GlassBox title="Gọn nhẹ" compact>
+Dựa trên thống kê luồng, không cần kiểm tra sâu nội dung gói tin.
+</GlassBox>
+
+<GlassBox title="Phù hợp SDN" compact>
+Tận dụng điều khiển tập trung và khả năng cài luật từ bộ điều khiển.
+</GlassBox>
+
+<GlassBox title="Tự động phản hồi" compact>
+Phát hiện bất thường và cài luật loại bỏ mà không cần thao tác thủ công trong mỗi sự kiện.
+</GlassBox>
+
+<GlassBox title="Dễ mở rộng" compact>
+Triển khai bằng Python trên Ryu, thuận lợi cho bổ sung mô-đun mới và kiểm thử bằng Mininet.
+</GlassBox>
+
+</div>
+
+---
+layout: content-card
+transition: slide-left
+---
+
+# Hạn chế của đề tài
+
+<div class="divider"></div>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:14px;">
+
+<GlassBox title="Phạm vi thực nghiệm" compact>
+
+- Kết quả mới được đánh giá trong môi trường mô phỏng.
+- Chưa triển khai trên thiết bị SDN vật lý.
+- Chưa đánh giá sâu trong mạng quy mô lớn hoặc nhiều bộ điều khiển.
+
+</GlassBox>
+
+<GlassBox title="Giới hạn kỹ thuật" compact>
+
+- Thuật toán dựa trên ngưỡng có thể khó xử lý khi lưu lượng hợp lệ tăng đột biến.
+- Chưa bao quát toàn bộ kiểu tấn công trong SDN.
+- Hiệu năng thực tế phụ thuộc cấu hình máy mô phỏng và tham số triển khai.
+
+</GlassBox>
+
+</div>
+
+---
+layout: content-card
+transition: slide-left
+---
+
+# Hướng phát triển
+
+<div class="divider"></div>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:14px;">
+
+<GlassBox title="Nâng cao phát hiện" compact>
+
+- Tối ưu phương pháp chọn ngưỡng theo hướng thích nghi với lưu lượng thực tế.
+- Kết hợp Entropy với học máy nhẹ để cải thiện độ chính xác.
+- Mở rộng phát hiện sang nhiều kiểu tấn công khác trong SDN.
+
+</GlassBox>
+
+<GlassBox title="Mở rộng triển khai" compact>
+
+- Thử nghiệm trên hệ thống SDN vật lý hoặc môi trường quy mô lớn hơn.
+- Xây dựng giao diện giám sát trực quan cho quản trị viên.
+- Bổ sung đánh giá định lượng về độ chính xác, độ trễ và cảnh báo nhầm.
+
+</GlassBox>
+
+</div>
+
+---
+layout: content-card
+transition: slide-left
+---
+
+# Bài học kinh nghiệm
+
+<div class="divider"></div>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:14px;">
+
+<GlassBox title="Kiến thức kỹ thuật" compact>
+
+- Hiểu rõ hơn về kiến trúc SDN và điều khiển bằng OpenFlow.
+- Nắm được cách xây dựng môi trường mô phỏng mạng bằng Mininet.
+- Biết cách khai thác thống kê luồng để phát hiện bất thường.
+
+</GlassBox>
+
+<GlassBox title="Kinh nghiệm triển khai" compact>
+
+- Rút kinh nghiệm trong lựa chọn ngưỡng và tổ chức dữ liệu theo cửa sổ thời gian.
+- Nhận thức rõ vai trò của tự động hóa trong phòng thủ mạng.
+- Tăng khả năng tổ chức mô-đun và kiểm thử kịch bản an ninh mạng.
+
+</GlassBox>
+
+</div>
+
+---
+layout: content-card
+transition: slide-left
+---
+
+# KẾT LUẬN CHUNG
+
+<div class="divider"></div>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:14px;">
+
+<GlassBox title="Tổng kết đề tài" compact>
+
+- Đề tài đã đề xuất và triển khai mô hình phát hiện, ngăn chặn tấn công mạng trong môi trường SDN.
+- Phương pháp thống kê luồng kết hợp Shannon Entropy cho thấy khả năng phát hiện bất thường với chi phí xử lý thấp.
+- Cơ chế cài đặt luật loại bỏ qua bộ điều khiển giúp hệ thống phản hồi nhanh trước lưu lượng độc hại.
+
+</GlassBox>
+
+<GlassBox title="Lời kết" compact>
+
+- Kết quả đạt được là nền tảng để mở rộng mô hình trong môi trường mạng thực tế hơn.
+- Mô hình có thể tiếp tục cải tiến về ngưỡng phát hiện, giao diện giám sát và đánh giá định lượng.
+- Xin chân thành cảm ơn thầy và các bạn đã lắng nghe.
+
+</GlassBox>
+
+</div>
