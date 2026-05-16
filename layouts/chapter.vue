@@ -1,83 +1,173 @@
-<!--
-  FILE: layouts/chapter.vue
-  PATH: /home/nora/Projects/slides/SDN-IDS/layouts/chapter.vue
-  DESC: Chapter divider — warm white theme
--->
 <template>
   <div class="slidev-layout chapter-layout">
-    <div class="chapter-bg">
-      <div class="chapter-gradient"></div>
-      <div class="chapter-lines">
-        <div v-for="i in 5" :key="i" class="line" :style="{ '--i': i }"></div>
-      </div>
-    </div>
-    <div class="chapter-inner">
-      <div class="chapter-number-display" v-if="$attrs.chapterNumber">
-        {{ String($attrs.chapterNumber).padStart(2, '0') }}
-      </div>
-      <div class="chapter-content">
+    <section class="chapter-copy">
+      <div
+        v-motion
+        class="chapter-content"
+        :initial="{ opacity: 0, x: -26 }"
+        :enter="{ opacity: 1, x: 0, transition: { duration: 620, ease: 'easeOut' } }"
+      >
+        <div class="chapter-kicker" v-if="$attrs.chapterNumber">
+          # {{ String($attrs.chapterNumber).padStart(2, '0') }}
+        </div>
         <slot />
       </div>
-      <div class="chapter-accent-bar"></div>
-    </div>
+    </section>
+
+    <section class="chapter-visual" aria-hidden="true">
+      <div class="chapter-orbit">
+        <div class="orbit-node node-a"></div>
+        <div class="orbit-node node-b"></div>
+        <div class="orbit-node node-c"></div>
+      </div>
+      <div class="chapter-number" v-if="$attrs.chapterNumber">
+        {{ String($attrs.chapterNumber).padStart(2, '0') }}
+      </div>
+      <div class="chapter-line"></div>
+    </section>
   </div>
 </template>
+
 <style scoped>
 .chapter-layout {
-  position: relative;
+  display: grid;
+  grid-template-columns: 0.92fr 1.08fr;
+  min-height: 100%;
+  padding: 0;
+  background: #ffffff;
+}
+
+.chapter-copy {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
-  padding: 60px 80px;
+  min-width: 0;
+  padding: 78px 36px 78px 72px;
+}
+
+.chapter-content {
+  width: 100%;
+  max-width: 360px;
+}
+
+.chapter-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 18px;
+  color: var(--sdn-blue);
+  font-size: 0.72rem;
+  font-weight: 850;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.chapter-kicker::before {
+  width: 34px;
+  height: 3px;
+  border-radius: 999px;
+  background: var(--sdn-gradient-primary);
+  content: '';
+}
+
+.chapter-content :deep(h1) {
+  margin: 0 0 14px;
+  font-size: 2.16rem;
+  font-weight: 850 !important;
+  line-height: 1.05 !important;
+  text-transform: uppercase;
+}
+
+.chapter-content :deep(h2) {
+  max-width: 340px;
+  margin: 0 0 18px;
+  color: var(--sdn-text-secondary);
+  font-family: var(--sdn-font-sans) !important;
+  font-size: 1.08rem;
+  font-weight: 650 !important;
+  line-height: 1.42 !important;
+}
+
+.chapter-content :deep(p) {
+  color: var(--sdn-text-muted);
+  font-size: 0.82rem;
+}
+
+.chapter-visual {
+  position: relative;
+  min-width: 0;
   overflow: hidden;
-  background: var(--sdn-bg-deep);
+  border-left: 1px solid var(--sdn-border-soft);
 }
-.chapter-bg { position: absolute; inset: 0; }
-.chapter-gradient {
-  position: absolute; inset: 0;
-  background:
-    radial-gradient(ellipse 80% 60% at 0% 50%, rgba(79,70,229,0.05) 0%, transparent 60%),
-    radial-gradient(ellipse 50% 80% at 100% 100%, rgba(8,145,178,0.04) 0%, transparent 60%);
+
+.chapter-orbit {
+  position: absolute;
+  top: 70px;
+  right: 76px;
+  width: 330px;
+  height: 330px;
+  border: 1px solid rgba(37, 99, 235, 0.14);
+  border-radius: 999px;
 }
-.chapter-lines { position: absolute; inset: 0; }
-.line {
-  position: absolute; right: 0; height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(79,70,229,0.1), transparent);
-  animation: fadeInRight 1s var(--sdn-ease-smooth) calc(var(--i) * 0.1s) both;
+
+.chapter-orbit::before,
+.chapter-orbit::after {
+  position: absolute;
+  inset: 44px;
+  border: 1px solid rgba(8, 145, 178, 0.12);
+  border-radius: inherit;
+  content: '';
 }
-.line:nth-child(1) { top: 15%; width: 60%; }
-.line:nth-child(2) { top: 30%; width: 45%; }
-.line:nth-child(3) { top: 55%; width: 70%; }
-.line:nth-child(4) { top: 70%; width: 40%; }
-.line:nth-child(5) { top: 85%; width: 55%; }
-.chapter-inner { position: relative; z-index: 1; width: 100%; }
-.chapter-number-display {
-  font-size: 8rem; font-weight: 900; line-height: 1;
-  background: linear-gradient(135deg, rgba(79,70,229,0.1), rgba(8,145,178,0.06));
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-  position: absolute; top: -40px; right: 0;
-  animation: fadeInRight 0.8s var(--sdn-ease-smooth) both;
+
+.chapter-orbit::after {
+  inset: 92px;
+  border-color: rgba(22, 163, 74, 0.14);
+}
+
+.orbit-node {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border: 4px solid #ffffff;
+  border-radius: 999px;
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.12);
+}
+
+.node-a {
+  top: 52px;
+  left: 28px;
+  background: var(--sdn-blue);
+}
+
+.node-b {
+  top: 132px;
+  right: -8px;
+  background: var(--sdn-green);
+}
+
+.node-c {
+  bottom: 42px;
+  left: 102px;
+  background: var(--sdn-violet);
+}
+
+.chapter-number {
+  position: absolute;
+  right: 66px;
+  bottom: 54px;
+  color: #eef4ff;
+  font-family: var(--sdn-font-display);
+  font-size: 8.2rem;
+  font-weight: 900;
+  line-height: 1;
   user-select: none;
 }
-.chapter-content { max-width: 600px; }
-.chapter-content :deep(h1) {
-  font-size: 2.6rem; font-weight: 800; line-height: 1.15;
-  color: var(--sdn-text-primary); margin-bottom: 16px;
-  animation: fadeInUp 0.7s var(--sdn-ease-smooth) 0.2s both;
-}
-.chapter-content :deep(h2) {
-  font-size: 1.15rem; font-weight: 400;
-  color: var(--sdn-text-secondary); line-height: 1.6;
-  animation: fadeInUp 0.7s var(--sdn-ease-smooth) 0.35s both;
-}
-.chapter-content :deep(p) {
-  font-size: 0.95rem; color: var(--sdn-text-muted);
-  animation: fadeInUp 0.7s var(--sdn-ease-smooth) 0.5s both;
-}
-.chapter-accent-bar {
-  width: 80px; height: 4px; border-radius: 2px;
-  background: var(--sdn-gradient-primary);
-  margin-top: 24px;
-  animation: fadeInLeft 0.6s var(--sdn-ease-smooth) 0.6s both;
+
+.chapter-line {
+  position: absolute;
+  right: 74px;
+  bottom: 42px;
+  left: 60px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(37, 99, 235, 0.32), rgba(22, 163, 74, 0.28));
 }
 </style>

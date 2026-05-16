@@ -1,58 +1,82 @@
-<!--
-  FILE: components/CoverSlide.vue
-  PATH: /home/nora/Projects/slides/SDN-IDS/components/CoverSlide.vue
-  DESC: Cover slide — warm white theme, full-height
--->
 <template>
   <div class="cover-slide">
-    <div class="cover-bg-mesh"></div>
-    <div class="cover-decor-circle cover-decor-1"></div>
-    <div class="cover-decor-circle cover-decor-2"></div>
-    <div class="cover-decor-circle cover-decor-3"></div>
-
-    <div class="cover-inner">
-      <div class="cover-badge animate-fade-in-down">
-        <span class="badge">{{ badge }}</span>
-      </div>
-
-      <h1 class="cover-title animate-fade-in-up">
-        <slot name="title">
-          PHÁT HIỆN VÀ NGĂN CHẶN
-          <span class="gradient-text">TẤN CÔNG MẠNG</span> DỰA TRÊN
-          MÔ HÌNH <span class="gradient-text-accent">SDN</span>
-        </slot>
-      </h1>
-
-      <p class="cover-subtitle animate-fade-in-up delay-200">
-        <slot name="subtitle">
-          SỬ DỤNG THỐNG KÊ LUỒNG VÀ PHÂN TÍCH ENTROPY
-        </slot>
-      </p>
-
-      <div class="cover-divider animate-fade-in-left delay-300"></div>
-
-      <div class="cover-meta animate-fade-in-up delay-400">
-        <div class="meta-grid">
-          <template v-if="advisor">
-            <div class="meta-label">Giảng viên:</div>
-            <div class="meta-value">{{ advisor }}</div>
-          </template>
-          <template v-if="student">
-            <div class="meta-label">Sinh viên thực hiện:</div>
-            <div class="meta-value">
-              <template v-if="Array.isArray(student)">
-                <div v-for="(s, i) in student" :key="i">{{ s }}</div>
-              </template>
-              <template v-else>
-                {{ student }}
-              </template>
-            </div>
-          </template>
+    <div class="cover-grid">
+      <section class="cover-main">
+        <div
+          v-motion
+          class="cover-badge"
+          :initial="{ opacity: 0, y: 14 }"
+          :enter="{ opacity: 1, y: 0, transition: { duration: 440 } }"
+        >
+          <span class="badge badge-network">
+            {{ badge }}
+          </span>
         </div>
-      </div>
-    </div>
 
-    <div class="cover-bottom-accent"></div>
+        <h1
+          v-motion
+          class="cover-title"
+          :initial="{ opacity: 0, y: 30 }"
+          :enter="{ opacity: 1, y: 0, transition: { duration: 700, delay: 110, ease: 'easeOut' } }"
+        >
+          <slot name="title">
+            Phát hiện và ngăn chặn
+            <span class="gradient-text">tấn công mạng<br /></span>
+            dựa trên mô hình mạng<br />
+            <span class="gradient-text-accent">SDN</span>
+          </slot>
+        </h1>
+
+        <p
+          v-motion
+          class="cover-subtitle"
+          :initial="{ opacity: 0, y: 20 }"
+          :enter="{ opacity: 1, y: 0, transition: { duration: 560, delay: 240, ease: 'easeOut' } }"
+        >
+          <slot name="subtitle">
+            SỬ DỤNG THỐNG KÊ LUỒNG & PHÂN TÍCH ENTROPY
+          </slot>
+        </p>
+      </section>
+
+      <aside
+        v-motion
+        class="cover-meta"
+        :initial="{ opacity: 0, x: 28 }"
+        :enter="{ opacity: 1, x: 0, transition: { duration: 620, delay: 420, ease: 'easeOut' } }"
+      >
+        <div class="meta-block" v-if="advisor">
+          <div class="meta-label">Giảng viên</div>
+          <div class="meta-value">{{ advisor }}</div>
+        </div>
+        <div class="meta-block" v-if="student">
+          <div class="meta-label">Sinh viên thực hiện</div>
+          <div class="meta-value">
+            <template v-if="Array.isArray(student)">
+              <div v-for="(s, i) in student" :key="i">{{ s }}</div>
+            </template>
+            <template v-else>
+              {{ student }}
+            </template>
+          </div>
+        </div>
+        <div
+          v-motion
+          class="cover-signals"
+          :initial="{ opacity: 0, y: 18 }"
+          :enter="{ opacity: 1, y: 0, transition: { duration: 520, delay: 360, ease: 'easeOut' } }"
+        >
+          <a href="https://github.com/hoquoclong/SDN-IDS" target="_blank" rel="noopener noreferrer">
+            <i class="i-mdi-github"></i>
+            GitHub
+          </a>
+          <a href="https://slides.nguyen-nbtk05.id.vn" target="_blank" rel="noopener noreferrer">
+            <i class="i-mdi-web"></i>
+            Website
+          </a>
+        </div>
+      </aside>
+    </div>
   </div>
 </template>
 
@@ -60,107 +84,176 @@
 defineProps({
   badge: { type: String, default: 'CHUYÊN ĐỀ MẠNG MÁY TÍNH 1' },
   advisor: { type: String, default: 'Trần Vĩnh Phúc' },
-  student: { type: [String, Array], default: () => ['Nguyễn Bá Thiều Khôi Nguyên — MSSV: 2312702', 'Hồ Quốc Long — MSSV: 2312675'] }
+  student: {
+    type: [String, Array],
+    default: () => ['Nguyễn Bá Thiều Khôi Nguyên - MSSV: 2312702', 'Hồ Quốc Long - MSSV: 2312675'],
+  },
 })
 </script>
 
 <style scoped>
 .cover-slide {
-  position: absolute;
-  inset: 0;
-  display: flex;
+  display: grid;
+  width: 100%;
+  min-height: 100%;
+  place-items: center;
+}
+
+.cover-grid {
+  display: grid;
+  width: max(900px, 100%);
+  grid-template-columns: 1fr 340px;
+  gap: 25px;
   align-items: center;
-  justify-content: center;
-  background: var(--sdn-bg-deep);
-  overflow: hidden;
 }
 
-.cover-bg-mesh {
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(ellipse 70% 50% at 15% 35%, rgba(79,70,229,0.07) 0%, transparent 70%),
-    radial-gradient(ellipse 50% 40% at 85% 65%, rgba(8,145,178,0.06) 0%, transparent 70%);
-  z-index: 0;
+.cover-main {
+  text-align: left;
 }
 
-.cover-decor-circle {
-  position: absolute;
-  border-radius: 50%;
-  border: 1px solid rgba(79,70,229,0.08);
-  z-index: 0;
-}
-.cover-decor-1 { width: 400px; height: 400px; top: -120px; right: -80px; }
-.cover-decor-2 { width: 250px; height: 250px; bottom: -60px; left: -40px; border-color: rgba(8,145,178,0.06); }
-.cover-decor-3 { width: 180px; height: 180px; top: 50%; right: 15%; border-color: rgba(5,150,105,0.06); }
-
-.cover-inner {
-  position: relative;
-  z-index: 2;
-  text-align: center;
-  max-width: 780px;
+.cover-badge {
+  margin-bottom: 18px;
 }
 
-.cover-badge { margin-bottom: 18px; }
+.badge-icon {
+  width: 14px;
+  height: 14px;
+}
 
 .cover-title {
-  font-size: 2.2rem !important;
-  font-weight: 900 !important;
-  line-height: 1.2 !important;
+  margin: 0;
   color: var(--sdn-text-primary);
-  margin-bottom: 16px;
+  font-size: 2.2rem !important;
+  font-weight: 850 !important;
+  letter-spacing: 0;
+  line-height: 1.2 !important;
+  text-transform: uppercase;
+}
+
+.gradient-text {
+  background: linear-gradient(135deg, var(--sdn-blue) 0%, var(--sdn-cyan) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: var(--sdn-blue);
+  -webkit-text-fill-color: transparent;
+}
+
+.gradient-text-accent {
+  background: linear-gradient(135deg, var(--sdn-green) 0%, var(--sdn-teal) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: var(--sdn-green);
+  -webkit-text-fill-color: transparent;
 }
 
 .cover-subtitle {
-  font-size: 1rem;
+  max-width: 580px;
+  margin: 18px 0 0;
   color: var(--sdn-text-secondary);
-  font-weight: 400;
-  margin-bottom: 24px;
-  text-align: center;
-  margin-left: auto;
-  margin-right: auto;
+  font-size: 0.98rem;
+  font-weight: 560;
+  line-height: 1.55;
+  text-align: left !important;
 }
 
-.cover-divider {
-  width: 200px; height: 3px; border-radius: 2px;
-  background: var(--sdn-gradient-primary);
-  margin: 0 auto 24px;
+.cover-signals {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.cover-signals a {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  border: 1px solid var(--sdn-border);
+  border-radius: 999px;
+  background: #ffffff;
+  box-shadow: var(--sdn-shadow-xs);
+  color: var(--sdn-text-secondary);
+  font-size: 0.72rem;
+  font-weight: 760;
+  padding: 8px 12px;
+  text-decoration: none;
+  transition:
+    border-color var(--sdn-duration-fast) var(--sdn-ease-smooth),
+    color var(--sdn-duration-fast) var(--sdn-ease-smooth),
+    transform var(--sdn-duration-fast) var(--sdn-ease-smooth);
+}
+
+.cover-signals a:hover {
+  border-color: color-mix(in srgb, var(--sdn-blue) 36%, var(--sdn-border));
+  color: var(--sdn-blue);
+  transform: translateY(-1px);
+}
+
+.cover-signals i {
+  width: 15px;
+  height: 15px;
+  color: var(--sdn-blue);
 }
 
 .cover-meta {
-  display: flex;
-  justify-content: center;
-  width: 100%;
+  border: 1px solid var(--sdn-border);
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: var(--sdn-shadow-sm);
+  padding: 22px;
+  text-align: left;
+  margin-top: 40px;
 }
 
-.meta-grid {
-  display: inline-grid;
-  grid-template-columns: max-content max-content;
-  column-gap: 16px;
-  row-gap: 8px;
-  text-align: left;
-  font-size: 0.85rem;
+.meta-block + .meta-block {
+  margin-top: 18px;
 }
 
 .meta-label {
   color: var(--sdn-text-muted);
-  font-weight: 500;
-  text-align: left;
+  font-size: 0.66rem;
+  font-weight: 850;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
 .meta-value {
-  color: var(--sdn-text-primary);
-  font-weight: 600;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 5px;
+  margin-top: 6px;
+  color: var(--sdn-text-primary);
+  font-size: 0.8rem;
+  font-weight: 760;
+  line-height: 1.35;
 }
 
-.cover-bottom-accent {
-  position: absolute;
-  bottom: 0; left: 0; right: 0;
-  height: 3px;
-  background: var(--sdn-gradient-primary);
-  z-index: 5;
+.meta-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 22px;
+  border-top: 1px solid var(--sdn-border-soft);
+  padding-top: 16px;
+}
+
+.meta-stats div {
+  min-width: 0;
+}
+
+.meta-stats strong {
+  display: block;
+  color: var(--sdn-blue);
+  font-family: var(--sdn-font-display);
+  font-size: 1.02rem;
+  line-height: 1;
+}
+
+.meta-stats span {
+  display: block;
+  margin-top: 4px;
+  color: var(--sdn-text-muted);
+  font-size: 0.58rem;
+  font-weight: 720;
+  text-transform: uppercase;
 }
 </style>

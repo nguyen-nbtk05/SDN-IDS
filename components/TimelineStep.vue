@@ -1,9 +1,5 @@
-<!--
-  FILE: components/TimelineStep.vue
-  DESC: Timeline step — warm white theme
--->
 <template>
-  <div class="timeline-step" :class="{ active }">
+  <div class="timeline-step" :class="{ active, last }">
     <div class="timeline-marker">
       <div class="marker-dot"></div>
       <div class="marker-line" v-if="!last"></div>
@@ -14,24 +10,70 @@
     </div>
   </div>
 </template>
+
 <script setup>
 defineProps({
   title: { type: String, default: '' },
   active: { type: Boolean, default: false },
-  last: { type: Boolean, default: false }
+  last: { type: Boolean, default: false },
 })
 </script>
+
 <style scoped>
-.timeline-step { display: flex; gap: 14px; }
-.timeline-marker { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; }
-.marker-dot {
-  width: 12px; height: 12px; border-radius: 50%;
-  background: rgba(79,70,229,0.12); border: 2px solid #4f46e5;
-  transition: all 0.3s ease;
+.timeline-step {
+  display: grid;
+  grid-template-columns: 26px 1fr;
+  gap: 12px;
 }
-.active .marker-dot { background: #4f46e5; box-shadow: 0 0 8px rgba(79,70,229,0.25); }
-.marker-line { width: 2px; flex: 1; min-height: 20px; background: rgba(79,70,229,0.12); margin-top: 4px; }
-.timeline-title { font-size: 0.82rem; font-weight: 700; color: var(--sdn-text-primary); margin-bottom: 2px; }
-.timeline-desc { font-size: 0.76rem; color: var(--sdn-text-muted); padding-bottom: 12px; line-height: 1.5; }
-.timeline-desc :deep(p) { font-size: 0.76rem; margin: 2px 0; }
+
+.timeline-marker {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.marker-dot {
+  width: 14px;
+  height: 14px;
+  border: 3px solid #ffffff;
+  border-radius: 999px;
+  background: var(--sdn-blue);
+  box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.26), 0 8px 16px rgba(37, 99, 235, 0.14);
+}
+
+.marker-line {
+  width: 2px;
+  flex: 1;
+  min-height: 22px;
+  margin-top: 5px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(37, 99, 235, 0.24), rgba(8, 145, 178, 0.08));
+}
+
+.timeline-body {
+  padding-bottom: 14px;
+}
+
+.timeline-title {
+  margin-bottom: 3px;
+  color: var(--sdn-text-primary);
+  font-size: 0.82rem;
+  font-weight: 850;
+}
+
+.timeline-desc {
+  color: var(--sdn-text-muted);
+  font-size: 0.74rem;
+  line-height: 1.45;
+}
+
+.timeline-desc :deep(p) {
+  margin: 2px 0;
+  font-size: 0.74rem;
+}
+
+.active .marker-dot {
+  background: var(--sdn-green);
+  box-shadow: 0 0 0 1px rgba(22, 163, 74, 0.25), 0 8px 16px rgba(22, 163, 74, 0.14);
+}
 </style>

@@ -10,10 +10,10 @@
   "dependencies": {
     "@slidev/cli": "^52.15.1",
     "@slidev/theme-default": "latest",
+    "@vueuse/motion": "^3.0.3",
     "vue": "^3.5.33"
   },
   "devDependencies": {
-    "@iconify-json/carbon": "^1.2.5",
     "@iconify-json/mdi": "^1.2.3",
     "@iconify-json/twemoji": "^1.2.5"
   }

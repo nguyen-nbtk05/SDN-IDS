@@ -7,58 +7,26 @@ chapterNumber: 2
 transition: slide-left
 ---
 
-# CHƯƠNG 2: CƠ SỞ LÝ THUYẾT VÀ CÔNG NGHỆ
+# Chương 2
 
-## Nền tảng cho mô hình phát hiện và ngăn chặn tấn công mạng
+## CƠ SỞ LÝ THUYẾT VÀ CÔNG NGHỆ
 
-- Làm rõ vai trò của SDN, OpenFlow, bộ điều khiển Ryu và Mininet trong mô hình thực nghiệm.
-- Trình bày cơ sở IDS/IPS và các hướng tiếp cận phát hiện tấn công.
-- Giới thiệu ba kịch bản nghiên cứu: DDoS, dò quét cổng và giả mạo ARP.
-- Đặt nền tảng toán học cho phân tích Shannon Entropy trên thống kê luồng.
+Các nền tảng công nghệ, mô hình IDS, SDN, OpenFlow, Ryu, Mininet và Entropy.
 
 ---
 layout: content-card
 transition: slide-left
 ---
 
-# Tổng quan công nghệ sử dụng
+<div class="deck-kicker">Tổng quan công nghệ</div>
 
-<div class="divider"></div>
+# STACK CÔNG NGHỆ SỬ DỤNG
 
-<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:12px;">
-
-<GlassBox title="SDN và OpenFlow" compact>
-
-- Tách mặt phẳng điều khiển khỏi mặt phẳng dữ liệu.
-- Cho phép bộ điều khiển quản lý tập trung các thiết bị chuyển mạch.
-- OpenFlow là giao diện hướng xuống để cài đặt và truy vấn bảng luồng.
-
-</GlassBox>
-
-<GlassBox title="Bộ điều khiển Ryu" compact>
-
-- Nền tảng phát triển bộ điều khiển SDN mã nguồn mở.
-- Viết bằng Python, thuận lợi cho xây dựng ứng dụng mạng.
-- Hỗ trợ truy vấn thống kê và cài đặt luật điều khiển qua OpenFlow.
-
-</GlassBox>
-
-<GlassBox title="Mininet" compact>
-
-- Giả lập mạng SDN trên một máy tính.
-- Tạo máy trạm, thiết bị chuyển mạch, liên kết và bộ điều khiển ảo.
-- Phù hợp cho kiểm thử lặp lại trong môi trường an toàn.
-
-</GlassBox>
-
-<GlassBox title="Công cụ kiểm thử" compact>
-
-- `hping3`: tạo lưu lượng DDoS tốc độ cao.
-- `nmap`: thực hiện dò quét cổng.
-- `arpspoof`: tạo kịch bản giả mạo ARP.
-
-</GlassBox>
-
+<div class="card-grid-2 mt-16">
+  <div v-click class="feature-card signal-card accent-blue"><div class="icon-bubble"><span class="i-twemoji-globe-with-meridians"></span></div><div><h3>SDN và OpenFlow</h3><p>SDN tách Data Plane và Control Plane; OpenFlow là Southbound API cho phép Controller thao tác Flow Table.</p></div></div>
+  <div v-click class="feature-card signal-card accent-green"><div class="icon-bubble"><span class="i-twemoji-antenna-bars"></span></div><div><h3>Ryu Controller</h3><p>Framework SDN bằng Python, hỗ trợ RESTful API để truy vấn thống kê luồng định kỳ.</p></div></div>
+  <div v-click class="feature-card signal-card accent-cyan"><div class="icon-bubble"><span class="i-twemoji-globe-with-meridians"></span></div><div><h3>Mininet</h3><p>Tạo mạng SDN ảo gồm host, switch OpenFlow và Controller trên một máy vật lý.</p></div></div>
+  <div v-click class="feature-card signal-card accent-red"><div class="icon-bubble"><span class="i-twemoji-keyboard"></span></div><div><h3>Công cụ tấn công</h3><p>hping3 tạo DDoS flood, nmap dò quét cổng, arpspoof đầu độc bảng ARP.</p></div></div>
 </div>
 
 ---
@@ -66,32 +34,16 @@ layout: content-card
 transition: slide-left
 ---
 
-# Hệ thống phát hiện và ngăn chặn tấn công mạng
+<div class="deck-kicker">Ryu SDN Controller</div>
 
-<div class="divider"></div>
+# VÌ SAO CHỌN RYU CHO HỆ THỐNG IDS?
 
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:14px;">
+<p class="deck-lead ryu-lead">Ryu cung cấp khả năng lập trình toàn diện bằng Python, giúp tối ưu hóa thu thập dữ liệu thống kê và can thiệp bảo mật tầng mạng.</p>
 
-<GlassBox title="IDS" compact>
-
-- Hệ thống phát hiện tấn công (Intrusion Detection System - IDS) giám sát lưu lượng hoặc hoạt động mạng.
-- Mục tiêu chính là nhận diện dấu hiệu bất thường, hành vi khả nghi hoặc vi phạm chính sách.
-- IDS truyền thống thường dừng ở cảnh báo cho quản trị viên.
-
-</GlassBox>
-
-<GlassBox title="IPS trong SDN" compact>
-
-- Hệ thống ngăn chặn tấn công (Intrusion Prevention System - IPS) chủ động xử lý lưu lượng độc hại.
-- Trong SDN, IDS có thể kiêm chức năng IPS nhờ quyền cài đặt luật từ bộ điều khiển.
-- Khi phát hiện tấn công, bộ điều khiển sinh luật loại bỏ và đẩy xuống bảng luồng.
-
-</GlassBox>
-
-</div>
-
-<div v-click class="glass-card" style="margin-top:16px;padding:12px 16px;">
-Trong đề tài, bộ điều khiển Ryu giữ vai trò quan sát thống kê luồng, phát hiện bất thường và phản ứng bằng bản tin Flow-Mod.
+<div class="card-grid-3 ryu-card-grid">
+  <div v-click class="feature-card ryu-card accent-blue"><div class="icon-bubble"><span class="i-mdi-lightning-bolt"></span></div><h3>Cơ chế hướng sự kiện</h3><p>Xử lý tức thời các bản tin <strong>Packet-In</strong> để phát hiện hành vi giả mạo ARP và lưu lượng lạ ngay khi chúng vừa chạm tới Switch.</p></div>
+  <div v-click class="feature-card ryu-card accent-green"><div class="icon-bubble"><span class="i-mdi-chip"></span></div><h3>Khai thác OpenFlow 1.3</h3><p>Truy cập trực tiếp vào các <strong>Bộ đếm</strong> của Bảng luồng để lấy dữ liệu thô phục vụ thuật toán tính toán <strong>Shannon Entropy</strong>.</p></div>
+  <div v-click class="feature-card ryu-card accent-violet"><div class="icon-bubble"><span class="i-mdi-cogs"></span></div><h3>RESTful API linh hoạt</h3><p>Cho phép IDS thực hiện Polling thống kê định kỳ và đẩy lệnh <strong>Flow-Mod Drop</strong> để cô lập kẻ tấn công một cách tự động.</p></div>
 </div>
 
 ---
@@ -99,414 +51,65 @@ layout: content-card
 transition: slide-left
 ---
 
-# Các hướng tiếp cận phát hiện tấn công
+<div class="deck-kicker">Phương thức tấn công</div>
 
-<div class="divider"></div>
+# BA KỸ THUẬT TẤN CÔNG TIÊU BIỂU
 
-<div style="margin-top:12px;">
+<p class="deck-lead attack-lead">Báo cáo tập trung vào các kỹ thuật tấn công tiêu biểu gây cạn kiệt tài nguyên và đe dọa an ninh mạng SDN.</p>
 
-| Hướng tiếp cận | Ưu điểm | Hạn chế |
-|---|---|---|
-| **Dựa trên chữ ký** | Chính xác với mẫu tấn công đã biết. | Khó phát hiện tấn công mới; kiểm tra sâu gói tin có thể tạo tải lớn. |
-| **Dựa trên học máy** | Có khả năng học đặc trưng bất thường. | Cần dữ liệu huấn luyện; chi phí tính toán và suy luận cao. |
-| **Thống kê luồng và Entropy** | Nhẹ, phù hợp với SDN; tận dụng bộ đếm trong bảng luồng. | Phụ thuộc ngưỡng; có thể nhận diện nhầm khi lưu lượng hợp lệ tăng đột biến. |
-
+<div class="attack-strip">
+  <div v-click class="attack-card accent-red"><div class="attack-card-header"><span class="badge badge-danger">DoS / DDoS</span><div class="icon-bubble"><span class="i-twemoji-high-voltage"></span></div></div><div class="attack-card-body"><h3 style="font-size: 1rem;">TÊ LIỆT BỘ ĐIỀU KHIỂN</h3><ul><li>Gây lỗi <strong>không khớp bảng (Table-miss)</strong> liên tục bằng lưu lượng IP giả mạo.</li><li>Switch đẩy dồn dập <em>Packet-In</em>, vắt kiệt tài nguyên CPU/RAM của Controller.</li></ul></div></div>
+  <div v-click class="attack-card accent-blue"><div class="attack-card-header"><span class="badge">Port Scanning</span><div class="icon-bubble"><span class="i-twemoji-magnifying-glass-tilted-left"></span></div></div><div class="attack-card-body"><h3 style="font-size: 1rem;">DÒ QUÉT CỔNG</h3><ul><li>Sinh ra vô số luồng mạng (flows) ngắn hạn.</li><li>Buộc Controller đẩy <em>Flow-Mod</em> rác, làm lấp đầy Bảng luồng (Flow Table).</li></ul></div></div>
+  <div v-click class="attack-card accent-amber"><div class="attack-card-header"><span class="badge badge-warning">ARP Spoofing</span><div class="icon-bubble"><span class="i-mdi-incognito"></span></div></div><div class="attack-card-body"><h3 style="font-size: 1rem;">GIẢ MẠO GIAO THỨC PHÂN GIẢI ĐỊA CHỈ</h3><ul><li>Lừa Controller học sai cấu trúc định tuyến ARP.</li><li>Tiếp tay thiết lập mô hình nghe lén <strong>Man-in-the-Middle</strong>.</li></ul></div></div>
 </div>
 
-<div v-click class="glass-card" style="margin-top:16px;padding:12px 16px;">
-Đề tài lựa chọn thống kê luồng kết hợp Shannon Entropy vì gọn nhẹ, phản hồi nhanh và dễ tích hợp với bộ điều khiển Ryu.
-</div>
+<!--
+* DDoS: kẻ tấn công huy động một mạng lưới khổng lồ các thiết bị đã bị chiếm quyền điều khiển (Botnet) nằm rải rác trên toàn cầu để đồng loạt nhắm vào một nạn nhân. Mục đích cuối cùng không phải là đánh cắp dữ liệu, mà là làm cạn kiệt tài nguyên hệ thống, khiến dịch vụ bị ngưng trệ và từ chối phục vụ người dùng hợp lệ.
+* Port: Kẻ tấn công gửi các gói tin thăm dò đến một dải rộng các cổng từ 1 đến 65535 trên thiết bị của nạn nhân. Dựa vào các gói tin phản hồi, kẻ tấn công có thể ánh xạ được sơ đồ mạng, xác định trạng thái cổng và phát hiện các dịch vụ đang vận hành để tìm kiếm lỗ hổng khai thác.
+* Lỗ hổng của giao thức ARP: Giao thức phân giải địa chỉ (ARP) được dùng để ánh
+xạ địa chỉ IP sang địa chỉ MAC (tầng 2) trong mạng LAN nội bộ. Lỗ hổng chí
+mạng của ARP là tính chất phi trạng thái và hoàn toàn không có cơ chế xác thực. Một thiết bị trạm sẵn sàng chấp nhận và cập nhật vào bộ đệm của nó bất kỳ gói tin ARP Reply nào nhận được, kể cả khi trước đó nó không hề gửi yêu cầu.
+Lợi dụng lỗ hổng trên, kẻ tấn công liên tục phát tán các gói tin
+ARP Reply giả mạo vào mạng. Chúng đánh lừa nạn nhân (Victim) rằng địa chỉ MAC
+của kẻ tấn công là địa chỉ của Gateway, đồng thời lừa Gateway rằng MAC của kẻ tấn
+công là của Victim.
+Đòn tấn công này thiết lập thành công mô hình Tấn công xen giữa (Man-in-the-Middle). Toàn bộ lưu lượng thay vì đi thẳng sẽ bị bẻ lái đi qua máy kẻ tấn công, cho phép chúng nghe lén hoặc thay đổi nội dung dữ liệu.
+-->
 
 ---
 layout: content-card
 transition: slide-left
 ---
 
-# Kiến trúc mạng định nghĩa bằng phần mềm
-
-<div class="divider"></div>
-
-<div style="display:grid;grid-template-columns:1.05fr 0.95fr;gap:18px;margin-top:10px;align-items:start;">
-
-<div>
-
-- Mạng định nghĩa bằng phần mềm (Software-Defined Networking - SDN) tách quyết định điều khiển khỏi chuyển tiếp dữ liệu.
-- **Mặt phẳng ứng dụng** chứa các ứng dụng giám sát, bảo mật, cân bằng tải.
-- **Mặt phẳng điều khiển** có bộ điều khiển giữ vai trò điều phối và ra quyết định.
-- **Mặt phẳng dữ liệu** gồm thiết bị chuyển mạch thực thi luật do bộ điều khiển cài đặt.
-- OpenFlow thường được dùng để kết nối bộ điều khiển với thiết bị chuyển mạch.
-
-</div>
-
-<div>
-
-```mermaid {scale: 0.62}
-flowchart TB
-  A["Mặt phẳng ứng dụng<br/>Giám sát, bảo mật, cân bằng tải"]
-  C["Mặt phẳng điều khiển<br/>Bộ điều khiển SDN"]
-  D["Mặt phẳng dữ liệu<br/>Thiết bị chuyển mạch"]
-  A <-->|"Giao diện hướng lên"| C
-  C <-->|"OpenFlow<br/>Giao diện hướng xuống"| D
-```
-
-</div>
-
-</div>
-
----
-layout: content-card
-transition: slide-left
----
-
-# Mininet trong mô phỏng mạng SDN
-
-<div class="divider"></div>
-
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:14px;">
-
-<GlassBox title="Vai trò mô phỏng" compact>
-
-- Tạo mạng SDN ảo gồm máy trạm, thiết bị chuyển mạch, liên kết và bộ điều khiển.
-- Sử dụng ảo hóa nhẹ dựa trên không gian tên mạng của Linux.
-- Cho phép xây dựng cấu trúc mạng tùy chỉnh bằng Python.
-
-</GlassBox>
-
-<GlassBox title="Giá trị kiểm thử" compact>
-
-- Máy trạm ảo có thể chạy `hping3`, `nmap`, `arpspoof` như môi trường Linux thật.
-- Dễ gán vai trò kẻ tấn công, nạn nhân và người dùng hợp lệ.
-- Phù hợp để kiểm thử IDS an toàn, có thể lặp lại và kiểm soát tham số.
-
-</GlassBox>
-
-</div>
-
----
-layout: content-card
-transition: slide-left
----
-
-# OpenFlow và bảng luồng
-
-<div class="divider"></div>
-
-<div style="display:grid;grid-template-columns:0.95fr 1.05fr;gap:18px;margin-top:10px;">
-
-<GlassBox title="Vai trò của OpenFlow" compact>
-
-- OpenFlow là giao thức giữa bộ điều khiển và thiết bị chuyển mạch.
-- Thiết bị chuyển mạch xử lý gói tin dựa trên bảng luồng.
-- Bộ điều khiển có thể thêm, sửa, xóa luật chuyển tiếp hoặc luật loại bỏ.
-- Bộ đếm thống kê là nguồn dữ liệu chính cho phân tích Entropy.
-
-</GlassBox>
-
-<div>
-
-| Thành phần mục luồng | Ý nghĩa |
-|---|---|
-| Trường đối sánh | IP, MAC, cổng vào, cổng TCP/UDP |
-| Độ ưu tiên | Chọn luật cần áp dụng khi có nhiều luật khớp |
-| Bộ đếm | Số gói tin, số byte, thời gian tồn tại |
-| Hành động | Chuyển tiếp, loại bỏ, chỉnh sửa |
-| Thời gian sống | Quy định vòng đời của luật |
-
-</div>
-
-</div>
-
----
-layout: content-card
-transition: slide-left
----
-
-# Cơ chế xử lý gói tin trong OpenFlow
-
-<div class="divider"></div>
-
-<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:18px;">
-
-<div class="glass-card" style="padding:12px;text-align:center;">
-<div class="badge">01</div>
-<p style="font-size:0.72rem;text-align:center;margin-top:8px;">Gói tin đi vào thiết bị chuyển mạch.</p>
-</div>
-
-<div class="glass-card" style="padding:12px;text-align:center;">
-<div class="badge badge-accent">02</div>
-<p style="font-size:0.72rem;text-align:center;margin-top:8px;">Thiết bị chuyển mạch tra cứu bảng luồng.</p>
-</div>
-
-<div class="glass-card" style="padding:12px;text-align:center;">
-<div class="badge badge-warning">03</div>
-<p style="font-size:0.72rem;text-align:center;margin-top:8px;">Nếu không khớp luật, gửi bản tin Packet-In lên bộ điều khiển.</p>
-</div>
-
-<div class="glass-card" style="padding:12px;text-align:center;">
-<div class="badge badge-success">04</div>
-<p style="font-size:0.72rem;text-align:center;margin-top:8px;">Bộ điều khiển phân tích và cài luật mới bằng bản tin Flow-Mod.</p>
-</div>
-
-<div class="glass-card" style="padding:12px;text-align:center;">
-<div class="badge badge-danger">05</div>
-<p style="font-size:0.72rem;text-align:center;margin-top:8px;">Nếu là tấn công, cài luật loại bỏ ưu tiên cao để chặn nguồn độc hại.</p>
-</div>
-
-</div>
-
-<div v-click class="glass-card" style="margin-top:18px;padding:12px 16px;">
-Cơ chế Packet-In và Flow-Mod cho phép chuyển từ phát hiện bất thường sang ngăn chặn trực tiếp trong mặt phẳng dữ liệu.
-</div>
-
----
-layout: content-card
-transition: slide-left
----
-
-# Bộ điều khiển Ryu
-
-<div class="divider"></div>
-
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:14px;">
-
-<GlassBox title="Đặc điểm kỹ thuật" compact>
-
-- Ryu là nền tảng phát triển bộ điều khiển SDN mã nguồn mở.
-- Được viết bằng Python và hoạt động theo kiến trúc hướng sự kiện.
-- Hỗ trợ nhiều phiên bản OpenFlow, bao gồm OpenFlow 1.3.
-- Có thể tích hợp giao diện REST để truy vấn thống kê luồng.
-
-</GlassBox>
-
-<GlassBox title="Phù hợp với đề tài" compact>
-
-- Dễ lập trình module IDS và thuật toán Entropy.
-- Thuận lợi cho truy vấn định kỳ bộ đếm từ thiết bị chuyển mạch.
-- Có thể cài đặt bản tin Flow-Mod để thêm luật loại bỏ.
-- Dễ mở rộng trong môi trường Mininet và thiết bị chuyển mạch ảo Open vSwitch.
-
-</GlassBox>
-
-</div>
-
----
-layout: content-card
-transition: slide-left
----
-
-# Các hình thức tấn công trong phạm vi đề tài
-
-<div class="divider"></div>
-
-<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:14px;">
-
-<GlassBox title="DDoS" compact>
-
-- Tạo lượng lớn lưu lượng từ nhiều nguồn hoặc IP giả mạo.
-- Làm quá tải băng thông, thiết bị chuyển mạch hoặc bộ điều khiển.
-- Trong SDN, có thể gây bùng nổ bản tin Packet-In.
-
-</GlassBox>
-
-<GlassBox title="Dò quét cổng" compact>
-
-- Thăm dò nhiều cổng trên máy nạn nhân.
-- Sinh nhiều luồng ngắn hạn trong thời gian ngắn.
-- Làm tăng tải xử lý và chiếm không gian bảng luồng.
-
-</GlassBox>
-
-<GlassBox title="Giả mạo ARP" compact>
-
-- Lợi dụng điểm yếu thiếu xác thực của ARP.
-- Làm sai lệch ánh xạ giữa địa chỉ MAC và IP.
-- Có thể dẫn đến tấn công xen giữa.
-
-</GlassBox>
-
-</div>
-
----
-layout: content-card
-transition: slide-left
----
-
-# Tác động của DDoS trong SDN
-
-<div class="divider"></div>
-
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:10px;align-items:start;">
-
-<div>
-
-- DDoS trong SDN không chỉ nhắm vào máy nạn nhân mà còn có thể làm quá tải bộ điều khiển.
-- Khi có nhiều gói tin lạ, thiết bị chuyển mạch liên tục gửi bản tin Packet-In.
-- Bộ điều khiển phải xử lý lượng lớn yêu cầu, gây cạn kiệt CPU, bộ nhớ hoặc băng thông kênh điều khiển.
-- Nếu bộ điều khiển mất khả năng xử lý, toàn bộ mạng SDN có thể bị ảnh hưởng.
-
-</div>
-
-<div>
-
-```mermaid {scale: 0.58}
-flowchart TB
-  X["Nguồn tấn công<br/>IP giả mạo"]
-  S["Thiết bị chuyển mạch<br/>Không khớp luật"]
-  P["Bản tin Packet-In<br/>tăng đột biến"]
-  C["Bộ điều khiển<br/>quá tải tài nguyên"]
-  N["Mạng SDN<br/>suy giảm hoặc tê liệt"]
-  X --> S --> P --> C --> N
-```
-
-</div>
-
-</div>
-
----
-layout: content-card
-transition: slide-left
----
-
-# Shannon Entropy trong phân tích lưu lượng
-
-<div class="divider"></div>
-
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:10px;">
-
-<div>
-
-- Shannon Entropy đo mức độ phân tán hoặc bất định của một đặc trưng mạng.
-- Đặc trưng có thể là địa chỉ IP nguồn, địa chỉ IP đích hoặc cổng đích.
-- Lưu lượng bình thường thường có phân bố ổn định.
-- Khi tấn công xảy ra, phân bố bất thường làm giá trị Entropy thay đổi rõ rệt.
-
-</div>
-
-<GlassBox title="Công thức" compact>
-
-$$
-H(X) = -\sum_{i=1}^{n} p(x_i)\log_2 p(x_i)
-$$
-
-- \(X\): đặc trưng cần phân tích.
-- \(p(x_i)\): xác suất xuất hiện của giá trị \(x_i\).
-- \(n\): số lượng giá trị phân biệt trong mẫu quan sát.
-
-</GlassBox>
-
-</div>
-
----
-layout: content-card
-transition: slide-left
----
-
-# Cửa sổ thời gian trượt
-
-<div class="divider"></div>
-
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:12px;align-items:start;">
-
-<div>
-
-- Không tính toán trên toàn bộ vòng đời mạng, mà chia dữ liệu theo từng khoảng thời gian.
-- Bộ điều khiển định kỳ truy vấn thống kê từ thiết bị chuyển mạch.
-- Mỗi khoảng thời gian tạo thành một mẫu quan sát độc lập.
-- Entropy được tính trên từng cửa sổ để phát hiện biến động bất thường.
-- Cách tiếp cận này giúp phản hồi nhanh và giảm chi phí xử lý.
-
-</div>
-
-<div class="glass-card" style="padding:16px;">
-<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;text-align:center;">
-  <div class="badge">t1</div>
-  <div class="badge badge-accent">t2</div>
-  <div class="badge badge-success">t3</div>
-  <div class="badge badge-warning">t4</div>
-</div>
-<div style="height:3px;background:var(--sdn-gradient-primary);margin:18px 8px;border-radius:2px;"></div>
-<p style="font-size:0.76rem;text-align:center;margin:0;">Mỗi cửa sổ tạo một mẫu thống kê luồng để tính \(H(X)\)</p>
-</div>
-
-</div>
-
----
-layout: content-card
-transition: slide-left
----
-
-# Diễn giải Entropy theo từng kiểu tấn công
-
-<div class="divider"></div>
-
-<div style="margin-top:12px;">
-
-| Trạng thái | Biểu hiện lưu lượng | Dấu hiệu Entropy |
-|---|---|---|
-| **Bình thường** | Lưu lượng tập trung vào một số nguồn hoặc đích quen thuộc. | Giá trị ổn định trong vùng an toàn. |
-| **DDoS** | Nhiều IP nguồn giả mạo hoặc phân tán. | Entropy của IP nguồn tăng mạnh. |
-| **Dò quét cổng** | Một nguồn truy cập nhiều cổng đích khác nhau. | Entropy của cổng đích tăng bất thường. |
-| **Giả mạo ARP** | Sai lệch ánh xạ MAC-IP trong mạng cục bộ. | Cần đối chiếu ràng buộc MAC-IP, không chỉ dựa vào Entropy. |
-
-</div>
-
----
-layout: content-card
-transition: slide-left
----
-
-# Tiêu chuẩn và quy chuẩn áp dụng
-
-<div class="divider"></div>
-
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:14px;">
-
-<GlassBox title="Nền tảng điều khiển" compact>
-
-- **OpenFlow 1.3**: cơ sở cho bảng luồng, bộ đếm thống kê và bản tin điều khiển.
-- Quy định cách bộ điều khiển cài đặt luật và nhận dữ liệu từ thiết bị chuyển mạch.
-
-</GlassBox>
-
-<GlassBox title="Giao thức mạng lõi" compact>
-
-- **IPv4**: trích xuất địa chỉ IP nguồn và IP đích.
-- **TCP/UDP**: xác định cổng giao vận phục vụ phát hiện dò quét cổng.
-- **ARP**: phân tích ánh xạ giữa địa chỉ IP và địa chỉ MAC.
-
-</GlassBox>
-
-</div>
-
-<div v-click class="glass-card" style="margin-top:16px;padding:12px 16px;">
-Các tiêu chuẩn này giúp mô hình phân tích đúng cấu trúc gói tin và tương tác đúng với thiết bị chuyển mạch OpenFlow.
-</div>
-
----
-layout: content-card
-transition: slide-left
----
-
-# Tổng kết Chương 2
-
-<div class="divider"></div>
-
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:14px;">
-
-<GlassBox title="Nền tảng công nghệ" compact>
-
-- SDN cung cấp khả năng điều khiển tập trung và lập trình mạng linh hoạt.
-- OpenFlow và bảng luồng là nền tảng để thu thập thống kê và thực thi luật ngăn chặn.
-- Bộ điều khiển Ryu và Mininet tạo môi trường phù hợp để xây dựng, thử nghiệm IDS.
-
-</GlassBox>
-
-<GlassBox title="Cơ sở phân tích" compact>
-
-- Shannon Entropy là phương pháp nhẹ để phát hiện bất thường dựa trên thống kê luồng.
-- Các kịch bản DDoS, dò quét cổng và giả mạo ARP cho thấy nhu cầu phản ứng tự động.
-- Nội dung chương này là cơ sở cho Chương 3: Phân tích và thiết kế hệ thống.
-
-</GlassBox>
-
+<div class="deck-kicker">Thuật toán Shannon Entropy</div>
+
+# ENTROPY ĐO MỨC ĐỘ HỖN LOẠN CỦA LƯU LƯỢNG
+
+<p class="deck-lead">Thuật toán không đo nội dung dữ liệu mà đo mức phân tán/hỗn loạn của đặc trưng mạng trong một cửa sổ quan sát.</p>
+
+<div class="split-board">
+  <div v-click class="focus-panel accent-blue">
+    <div>
+      <span class="badge">Công thức</span>
+      <MathFormula expression="H(X) = -\sum_{i=1}^{n} p(x_i)\log_2 p(x_i)" />
+      <p class="formula-source">
+        Nguồn: Claude E. Shannon, <a href="https://people.math.harvard.edu/~ctm/home/text/others/shannon/entropy/entropy.pdf" target="_blank">A Mathematical Theory of Communication</a>, Bell System Technical Journal, 1948.
+      </p>
+      <p>Shannon Entropy 𝐻(𝑋) được tính bằng tổng của các xác suất xuất hiện nhân với logarit cơ số 2 của chính xác suất đó.</p>
+    </div>
+  </div>
+
+  <div class="timeline-panel">
+    <div class="formula-explain">
+      <h3>Trong đó:</h3>
+      <ul>
+        <li><strong>𝑋</strong>: Biến ngẫu nhiên cần phân tích.</li>
+        <li><strong>𝑛</strong>: Tổng số lượng các giá trị phân biệt của 𝑋 xuất hiện trong mẫu.</li>
+        <li>
+          <strong>𝑝(𝑥ᵢ)</strong>: Xác suất xuất hiện của phần tử 𝑥ᵢ. Xác suất này được tính toán thực tế bằng công thức
+          <span class="inline-formula">𝑝(𝑥ᵢ) = 𝑐ᵢ / 𝑆</span>, với 𝑐ᵢ là số lượng gói tin thuộc về phần tử 𝑥ᵢ, và 𝑆 là tổng số gói tin bắt được trong toàn bộ mẫu.
+        </li>
+      </ul>
+    </div>
+  </div>
 </div>

@@ -1,34 +1,46 @@
-<!--
-  FILE: components/EndSlide.vue
-  PATH: /home/nora/Projects/slides/SDN-IDS/components/EndSlide.vue
-  DESC: End/thank you slide — warm white, full-height
--->
 <template>
   <div class="end-slide">
-    <div class="end-bg-mesh"></div>
-    <div class="end-decor end-decor-1"></div>
-    <div class="end-decor end-decor-2"></div>
+    <NetworkParticles
+      class="end-particles"
+      :count="34"
+      :speed="0.12"
+      :connection-distance="145"
+      :colors="['#2563eb', '#0891b2', '#16a34a', '#7c3aed']"
+    />
 
-    <div class="end-inner">
-      <div class="end-icon animate-scale-in">🎓</div>
-      <h1 class="end-title animate-fade-in-up delay-200">
-        Cảm ơn quý Thầy/Cô<br/>đã lắng nghe!
-      </h1>
-      <div class="end-divider animate-fade-in-left delay-400"></div>
-      <p class="end-subtitle animate-fade-in-up delay-500">Phần hỏi đáp — Q&amp;A</p>
-      <div class="end-contact animate-fade-in-up delay-600">
-        <span>📧 {{ email }}</span>
-        <span style="opacity:0.3;">•</span>
-        <span>🔗 {{ github }}</span>
+    <section
+      v-motion
+      class="end-content"
+      :initial="{ opacity: 0, y: 24 }"
+      :enter="{ opacity: 1, y: 0, transition: { duration: 640, ease: 'easeOut' } }"
+    >
+      <span class="badge badge-success">SDN-IDS · CHUYÊN ĐỀ MẠNG MÁY TÍNH 1</span>
+      <h1>CẢM ƠN THẦY VÀ CÁC BẠN <br />ĐÃ LẮNG NGHE</h1>
+
+      <div class="end-links">
+        <a
+          v-if="githubUrl"
+          class="github-button"
+          :href="githubUrl"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="GitHub repository"
+          title="GitHub repository"
+        >
+          <i class="i-mdi-github"></i>
+        </a>
       </div>
-    </div>
+    </section>
   </div>
 </template>
 
 <script setup>
+import MetricCard from './MetricCard.vue'
+import NetworkParticles from './NetworkParticles.vue'
+
 defineProps({
-  email: { type: String, default: 'student@university.edu.vn' },
-  github: { type: String, default: 'github.com/sdn-ids' }
+  githubLabel: { type: String, default: '' },
+  githubUrl: { type: String, default: '' },
 })
 </script>
 
@@ -36,65 +48,94 @@ defineProps({
 .end-slide {
   position: absolute;
   inset: 0;
+  display: grid;
+  width: 100%;
+  height: 100%;
+  min-height: 100%;
+  place-items: center;
+  overflow: hidden;
+  padding: 56px;
+  background: #ffffff;
+}
+
+.end-particles {
+  opacity: 0.42;
+}
+
+.end-content {
   display: flex;
+  width: min(820px, 100%);
+  min-height: 100%;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: var(--sdn-bg-deep);
-  overflow: hidden;
-}
-
-.end-bg-mesh {
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(ellipse 60% 50% at 50% 40%, rgba(79,70,229,0.05) 0%, transparent 70%);
-}
-
-.end-decor {
-  position: absolute;
-  border-radius: 50%;
-  border: 1px solid rgba(79,70,229,0.06);
-}
-.end-decor-1 { width: 350px; height: 350px; bottom: -100px; right: -80px; }
-.end-decor-2 { width: 200px; height: 200px; top: -60px; left: -40px; border-color: rgba(8,145,178,0.05); }
-
-.end-inner {
-  position: relative;
-  z-index: 2;
   text-align: center;
 }
 
-.end-icon {
-  font-size: 3.5rem;
-  margin-bottom: 20px;
-}
-
-.end-title {
-  font-size: 2rem !important;
-  font-weight: 800 !important;
+.end-content h1 {
+  max-width: 760px;
+  margin: 18px auto 12px;
   color: var(--sdn-text-primary);
-  line-height: 1.3 !important;
-  margin-bottom: 18px;
+  font-size: 2.1rem;
+  font-weight: 850 !important;
+  line-height: 1.12 !important;
 }
 
-.end-divider {
-  width: 80px; height: 3px; border-radius: 2px;
-  background: var(--sdn-gradient-primary);
-  margin: 0 auto 18px;
+.end-content p {
+  max-width: 680px;
+  margin: 0 auto;
+  color: var(--sdn-text-secondary);
+  font-size: 0.92rem;
+  text-align: center;
 }
 
-.end-subtitle {
-  font-size: 1.1rem;
-  color: var(--sdn-primary);
-  font-weight: 600;
-  margin-bottom: 24px;
-}
-
-.end-contact {
+.end-metrics {
   display: flex;
-  gap: 12px;
+  flex-wrap: wrap;
   justify-content: center;
-  font-size: 0.82rem;
-  color: var(--sdn-text-muted);
+  gap: 12px;
+  margin-top: 26px;
+}
+
+.end-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.github-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 44px;
+  height: 44px;
+  border: 1px solid color-mix(in srgb, var(--sdn-blue) 24%, var(--sdn-border));
+  border-radius: 50%;
+  background: var(--sdn-blue);
+  color: #ffffff;
+  font-size: 0.78rem;
+  font-weight: 720;
+  line-height: 1;
+  padding: 0;
+  text-decoration: none;
+  transition:
+    background var(--sdn-duration-fast) var(--sdn-ease-smooth),
+    transform var(--sdn-duration-fast) var(--sdn-ease-smooth),
+    box-shadow var(--sdn-duration-fast) var(--sdn-ease-smooth);
+}
+
+.github-button:hover {
+  background: var(--sdn-blue-700);
+  box-shadow: var(--sdn-shadow-sm);
+  transform: translateY(-1px);
+}
+
+.end-links i {
+  width: 22px;
+  height: 22px;
+  color: currentColor;
 }
 </style>

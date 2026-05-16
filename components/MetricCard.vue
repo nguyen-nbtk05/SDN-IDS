@@ -1,59 +1,131 @@
-<!--
-  FILE: components/MetricCard.vue
-  DESC: Metric card — warm white theme
--->
 <template>
-  <div class="metric-card glass-card" :class="[`variant-${variant}`]">
-    <div class="metric-icon" v-if="icon || $slots.icon">
-      <span class="icon-text">
-        <slot name="icon">
-          <span v-if="icon && icon.startsWith('i-')" :class="icon" style="display: inline-block; width: 1.2em; height: 1.2em;"></span>
-          <span v-else-if="icon">{{ icon }}</span>
-        </slot>
-      </span>
+  <div
+    v-motion
+    class="metric-card"
+    :class="[`variant-${variant}`]"
+    :initial="{ opacity: 0, scale: 0.96, y: 10 }"
+    :enter="{ opacity: 1, scale: 1, y: 0, transition: { type: 'spring', stiffness: 260, damping: 24 } }"
+  >
+    <div class="metric-icon" v-if="resolvedIcon || $slots.icon">
+      <slot name="icon">
+        <span :class="resolvedIcon" class="metric-icon-glyph"></span>
+      </slot>
     </div>
+
     <div class="metric-body">
-      <div class="metric-val">{{ value }}</div>
+      <div class="metric-value metric-val">{{ value }}</div>
       <div class="metric-lbl">{{ label }}</div>
       <div class="metric-desc" v-if="description">{{ description }}</div>
     </div>
   </div>
 </template>
+
 <script setup>
-defineProps({
+import { computed } from 'vue'
+
+const props = defineProps({
   icon: { type: String, default: '' },
   value: { type: String, default: '0' },
   label: { type: String, default: 'Metric' },
   description: { type: String, default: '' },
-  variant: { type: String, default: 'primary' }
+  variant: { type: String, default: 'primary' },
 })
+
+const iconFallbacks = {
+  primary: 'i-twemoji-globe-with-meridians',
+  accent: 'i-twemoji-bar-chart',
+  success: 'i-twemoji-white-heavy-check-mark',
+  warning: 'i-twemoji-warning',
+  danger: 'i-twemoji-high-voltage',
+  violet: 'i-twemoji-bar-chart',
+}
+
+const resolvedIcon = computed(() => props.icon || iconFallbacks[props.variant] || iconFallbacks.primary)
 </script>
+
 <style scoped>
 .metric-card {
-  padding: 16px 18px;
-  display: flex; gap: 12px;
-  align-items: flex-start;
-  min-width: 150px;
+  --metric-color: var(--sdn-blue);
+  display: flex;
+  align-items: center;
+  gap: var(--metric-gap, 12px);
+  min-width: var(--metric-min-width, 156px);
+  border: 1px solid var(--sdn-border);
+  border-radius: var(--metric-radius, 16px);
+  background: #ffffff;
+  box-shadow: var(--sdn-shadow-xs);
+  padding: var(--metric-padding, 13px 15px);
 }
+
 .metric-icon {
-  width: 38px; height: 38px; border-radius: 10px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 1.1rem; flex-shrink: 0;
+  display: grid;
+  width: var(--metric-icon-size, 42px);
+  height: var(--metric-icon-size, 42px);
+  flex: 0 0 var(--metric-icon-size, 42px);
+  place-items: center;
+  border: 1px solid color-mix(in srgb, var(--metric-color) 18%, transparent);
+  border-radius: var(--metric-icon-radius, 14px);
+  background: color-mix(in srgb, var(--metric-color) 9%, #ffffff);
+  color: var(--metric-color);
 }
-.variant-primary .metric-icon { background: rgba(79,70,229,0.1); }
-.variant-accent .metric-icon { background: rgba(8,145,178,0.1); }
-.variant-success .metric-icon { background: rgba(5,150,105,0.1); }
-.variant-warning .metric-icon { background: rgba(217,119,6,0.1); }
-.variant-danger .metric-icon { background: rgba(220,38,38,0.1); }
-.metric-val { font-size: 1.5rem; font-weight: 800; line-height: 1; }
-.variant-primary .metric-val { color: #4f46e5; }
-.variant-accent .metric-val { color: #0891b2; }
-.variant-success .metric-val { color: #059669; }
-.variant-warning .metric-val { color: #d97706; }
-.variant-danger .metric-val { color: #dc2626; }
+
+.metric-icon-glyph {
+  width: var(--metric-icon-glyph-size, 22px);
+  height: var(--metric-icon-glyph-size, 22px);
+}
+
+.metric-body {
+  min-width: 0;
+  text-align: left;
+}
+
+.metric-val {
+  background: linear-gradient(135deg, var(--metric-color), color-mix(in srgb, var(--metric-color) 72%, #0f172a));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: var(--metric-color);
+  font-family: var(--sdn-font-display);
+  font-size: var(--metric-value-size, 1.45rem);
+  font-weight: 880;
+  letter-spacing: 0;
+  line-height: var(--metric-value-line-height, 1);
+  -webkit-text-fill-color: transparent;
+}
+
 .metric-lbl {
-  font-size: 0.72rem; font-weight: 600; text-transform: uppercase;
-  letter-spacing: 0.06em; color: var(--sdn-text-muted); margin-top: 4px;
+  margin-top: var(--metric-label-margin, 5px);
+  color: var(--sdn-text-secondary);
+  font-size: var(--metric-label-size, 0.66rem);
+  font-weight: 850;
+  letter-spacing: 0.02em;
+  line-height: var(--metric-label-line-height, 1.2);
+  text-transform: uppercase;
 }
-.metric-desc { font-size: 0.7rem; color: var(--sdn-text-muted); margin-top: 2px; line-height: 1.4; }
+
+.metric-desc {
+  margin-top: 4px;
+  color: var(--sdn-text-muted);
+  font-size: 0.66rem;
+  line-height: 1.35;
+}
+
+.variant-accent {
+  --metric-color: var(--sdn-cyan);
+}
+
+.variant-success {
+  --metric-color: var(--sdn-green);
+}
+
+.variant-warning {
+  --metric-color: var(--sdn-amber);
+}
+
+.variant-danger {
+  --metric-color: var(--sdn-red);
+}
+
+.variant-violet {
+  --metric-color: var(--sdn-violet);
+}
 </style>

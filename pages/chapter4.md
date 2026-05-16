@@ -7,44 +7,30 @@ chapterNumber: 4
 transition: slide-left
 ---
 
-# CHƯƠNG 4: TRIỂN KHAI THỰC NGHIỆM VÀ ĐÁNH GIÁ
+# Chương 4
 
-## Môi trường, triển khai, kiểm thử và nhận xét kết quả
+## TRIỂN KHAI THỰC NGHIỆM & ĐÁNH GIÁ
 
-- Trình bày môi trường phát triển và cấu trúc mạng thực nghiệm.
-- Mô tả cách triển khai các mô-đun chính của hệ thống IDS.
-- Xây dựng kịch bản kiểm thử DDoS, dò quét cổng và giả mạo ARP.
-- Đánh giá khả năng phát hiện, ngăn chặn và ghi nhận cảnh báo.
+Môi trường phát triển, topology, cấu trúc dự án, cài đặt module và kịch bản kiểm thử tự động.
 
 ---
 layout: content-card
 transition: slide-left
 ---
 
-# Môi trường phát triển
+<div class="deck-kicker">Cấu hình phần cứng và phần mềm</div>
 
-<div class="divider"></div>
+# MÔI TRƯỜNG PHÁT TRIỂN
 
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:14px;">
+<p class="deck-lead">Báo cáo triển khai hệ thống cục bộ, tận dụng ảo hóa của Mininet để mô phỏng toàn bộ mạng SDN.</p>
 
-<GlassBox title="Nền tảng triển khai" compact>
-
-- Hệ điều hành Linux hoặc máy ảo phục vụ chạy Mininet.
-- Bộ điều khiển Ryu chạy ứng dụng phát hiện xâm nhập.
-- Mininet và Open vSwitch mô phỏng mạng SDN.
-- Python được dùng để xây dựng mô-đun xử lý và kịch bản mạng.
-
-</GlassBox>
-
-<GlassBox title="Công cụ kiểm thử" compact>
-
-- `hping3`: tạo lưu lượng kiểm thử DDoS.
-- `nmap`: kiểm tra kịch bản dò quét cổng.
-- `arpspoof`: kiểm thử giả mạo ARP.
-- Bản ghi nhật ký trên thiết bị đầu cuối dùng để theo dõi cảnh báo.
-
-</GlassBox>
-
+<div v-click class="card-grid-3">
+  <div class="feature-card accent-violet"><div class="icon-bubble"><span class="i-twemoji-penguin"></span></div><h3>Ubuntu 20.04 LTS</h3><p>Môi trường Linux phục vụ ảo hóa mạng và chạy tiến trình thực nghiệm.</p></div>
+  <div class="feature-card accent-cyan"><div class="icon-bubble"><span class="i-twemoji-globe-with-meridians"></span></div><h3>Mininet 2.3.0</h3><p>Trình giả lập mạng SDN tạo host, switch và link ảo.</p></div>
+  <div class="feature-card accent-blue"><div class="icon-bubble"><span class="i-twemoji-antenna-bars"></span></div><h3>Ryu Controller</h3><p>Framework điều khiển mạng dựa trên Python.</p></div>
+  <div class="feature-card accent-green"><div class="icon-bubble"><span class="i-twemoji-globe-with-meridians"></span></div><h3>Open vSwitch</h3><p>Switch ảo hỗ trợ OpenFlow 1.3.</p></div>
+  <div class="feature-card accent-red"><div class="icon-bubble"><span class="i-twemoji-keyboard"></span></div><h3>hping3 / nmap / arpspoof</h3><p>Bộ công cụ sinh tấn công DDoS, Port Scan và ARP Spoofing.</p></div>
+  <div class="feature-card accent-amber"><div class="icon-bubble"><span class="i-twemoji-stopwatch"></span></div><h3>iperf / ping</h3><p>Đo băng thông, độ trễ và kiểm tra kết nối.</p></div>
 </div>
 
 ---
@@ -52,39 +38,25 @@ layout: content-card
 transition: slide-left
 ---
 
-# Cấu trúc mạng thực nghiệm
+<div class="deck-kicker">Topology</div>
 
-<div class="divider"></div>
+# THIẾT LẬP SƠ ĐỒ MẠNG THỰC NGHIỆM
 
-<div style="display:grid;grid-template-columns:0.95fr 1.05fr;gap:18px;margin-top:10px;align-items:start;">
+<p class="deck-lead">Sơ đồ mạng được thiết kế theo cấu trúc hình sao thông qua script Python sử dụng thư viện API của Mininet.</p>
 
-<div>
+<div class="split-board topology-board">
+  <figure class="report-figure topology-figure">
+    <img src="/report-assets/fig-4-1-mininet-topology.png" alt="Sơ đồ kiến trúc mạng thực nghiệm trên Mininet" />
+    <figcaption>Sơ đồ kiến trúc mạng thực nghiệm trên Mininet</figcaption>
+  </figure>
 
-- Mạng được xây dựng trong Mininet theo cấu trúc liên kết hình sao.
-- Các máy trạm gồm nhóm tấn công, nhóm nạn nhân và nhóm người dùng hợp lệ.
-- Các máy kết nối qua thiết bị chuyển mạch OpenFlow.
-- Bộ điều khiển Ryu quản lý thiết bị chuyển mạch và thu thập thống kê.
-- Cấu trúc mạng hỗ trợ sinh lưu lượng bình thường và lưu lượng tấn công.
-
-</div>
-
-<div>
-
-```mermaid {scale: 0.56}
-flowchart TB
-  C["Bộ điều khiển Ryu"]
-  S["Thiết bị chuyển mạch OpenFlow"]
-  V["Máy nạn nhân"]
-  B["Người dùng hợp lệ"]
-  A["Máy tấn công"]
-  C <-->|"OpenFlow"| S
-  S --- V
-  S --- B
-  S --- A
-```
-
-</div>
-
+  <div class="metric-deck">
+    <MetricCard icon="i-twemoji-antenna-bars" value="Controller - C0" label="Bộ điều khiển trung tâm" variant="primary" />
+    <MetricCard icon="i-twemoji-globe-with-meridians" value="OpenFlow Switch - S1" label="Thiết bị chuyển mạch" variant="accent" />
+    <MetricCard icon="i-twemoji-laptop" value="Victim" label="Nhóm Nạn nhân" variant="success" />
+    <MetricCard icon="i-twemoji-bust-in-silhouette" value="Benign Hosts" label="Nhóm Người dùng hợp lệ" variant="warning" />
+    <MetricCard icon="i-twemoji-high-voltage" value="Attacker" label="Nhóm Kẻ tấn công" variant="danger" />
+  </div>
 </div>
 
 ---
@@ -92,108 +64,171 @@ layout: content-card
 transition: slide-left
 ---
 
-# Cấu trúc thư mục dự án
+<div class="deck-kicker">Sơ đồ tổ chức tệp tin</div>
 
-<div class="divider"></div>
+# CẤU TRÚC THƯ MỤC DỰ ÁN
 
-<div style="display:grid;grid-template-columns:1.05fr 0.95fr;gap:18px;margin-top:10px;">
+<p class="deck-lead">Mã nguồn được tổ chức theo module để tách biệt topology, phát hiện, ngăn chặn, kiểm thử và tiện ích xem topology.</p>
 
-<div>
-
-```text
-SDN-IDS/
-├── src/
+<div class="project-structure-board">
+  <div class="project-tree-panel">
+    <pre><code>SDN-IDS/
+├── README.md
+├── alerts.log
+├── pyproject.toml
+├── src/ <span class="tree-tag">CORE</span>
 │   ├── topology.py
 │   ├── ids_detector.py
 │   ├── arp_monitor.py
-│   ├── mitigation.py
-│   ├── test_ids.py
-│   └── topology_viewer.py
-├── scripts/
+│   └── mitigation.py
+├── scripts/ <span class="tree-tag">TEST</span>
 │   ├── ddos.sh
 │   ├── port_scan.sh
 │   └── arp_spoofing.sh
-├── alerts.log
-├── test_results.json
-└── pyproject.toml
+├── topology_viewer.py
+└── test_ids.py</code></pre>
+  </div>
+
+  <div class="module-list">
+    <div class="module-card accent-blue"><div class="icon-bubble"><span class="i-mdi-lan"></span></div><div><h3>Topology</h3><p><code>topology.py</code> tạo star topology gồm 1 switch, 1 victim, 5 benign host và 10 attacker.</p></div></div>
+    <div class="module-card accent-green"><div class="icon-bubble"><span class="i-mdi-chip"></span></div><div><h3>Core Logic (IDS)</h3><p><code>ids_detector.py</code> lấy Flow Stats, tính Shannon Entropy, phát hiện DDoS và Port Scan.</p></div></div>
+    <div class="module-card accent-amber"><div class="icon-bubble"><span class="i-mdi-shield-search"></span></div><div><h3>ARP Monitoring</h3><p><code>arp_monitor.py</code> giám sát Packet-In ARP và đối chiếu bảng TRUSTED MAC-IP.</p></div></div>
+    <div class="module-card accent-red"><div class="icon-bubble"><span class="i-mdi-shield-check"></span></div><div><h3>Mitigation Module</h3><p><code>mitigation.py</code> gửi Flow-Mod priority 65535, chặn mặc định trong 300 giây.</p></div></div>
+    <div class="module-card accent-violet"><div class="icon-bubble"><span class="i-mdi-chart-line"></span></div><div><h3>Evaluation & Viewer</h3><p><code>test_ids.py</code> tính Precision, Recall, F1; <code>topology_viewer.py</code> xem trạng thái topology.</p></div></div>
+  </div>
+</div>
+
+---
+layout: content-card
+transition: slide-left
+---
+
+<div class="deck-kicker">Scripts và dữ liệu</div>
+
+# KỊCH BẢN MÔ PHỎNG TẤN CÔNG VÀ GHI NHẬN KẾT QUẢ
+
+<div class="roadmap-grid">
+  <div class="roadmap-item accent-red"><div class="roadmap-code">DDoS</div><div><h3>scripts/ddos.sh</h3><p>Dùng hping3 để thực hiện TCP SYN Flood tốc độ cao.</p></div></div>
+  <div class="roadmap-item accent-blue"><div class="roadmap-code">SCAN</div><div><h3>scripts/port_scan.sh</h3><p>Dùng nmap rà quét các cổng từ 1 đến 1000 trên thiết bị mục tiêu.</p></div></div>
+  <div class="roadmap-item accent-amber"><div class="roadmap-code">ARP</div><div><h3>scripts/arp_spoofing.sh</h3><p>Dùng arpspoof để đầu độc bảng ARP của máy nạn nhân.</p></div></div>
+  <div class="roadmap-item accent-green"><div class="roadmap-code">LOG</div><div><h3>alerts.log</h3><p>Lưu cảnh báo JSON gồm thời gian, loại hình và IP tấn công.</p></div></div>
+  <div class="roadmap-item accent-violet"><div class="roadmap-code">TOML</div><div><h3>pyproject.toml</h3><p>Khai báo thư viện phụ thuộc như ryu, requests và eventlet.</p></div></div>
+  <div class="roadmap-item accent-cyan"><div class="roadmap-code">JSON</div><div><h3>test_results.json</h3><p>Xuất kết quả đánh giá tự động sau mỗi chu kỳ kiểm thử.</p></div></div>
+</div>
+
+---
+layout: content-card
+transition: slide-left
+---
+
+<div class="deck-kicker">Entropy</div>
+
+# CÔNG THỨC SHANNON ENTROPY
+
+<p class="deck-lead">Hàm tính Entropy chuyển phân bố packet theo IP thành một chỉ số phản ánh mức độ phân tán của lưu lượng.</p>
+
+<CodePanel class="code-panel-large" badge="Entropy" title="calculate_entropy()" tone="blue" caption="Hình 4.2: Hàm tính toán Shannon Entropy trong ids_detector.py">
+
+```python
+def calculate_entropy(ip_packet_counts):
+    """Tính Shannon Entropy từ phân bố packet theo IP."""
+    total = sum(ip_packet_counts.values())
+    if total == 0:
+        return 0.0
+
+    entropy = 0.0
+    for count in ip_packet_counts.values():
+        if count <= 0:
+            continue
+        p = count / total
+        entropy -= p * math.log2(p)
+
+    return entropy
 ```
 
-</div>
-
-<GlassBox title="Vai trò chính" compact>
-
-- `topology.py`: định nghĩa cấu trúc mạng Mininet.
-- `ids_detector.py`: xử lý thống kê, Entropy và bất thường.
-- `arp_monitor.py`: giám sát ràng buộc MAC-IP.
-- `mitigation.py`: cài đặt cơ chế ngăn chặn.
-- `alerts.log`: lưu cảnh báo và kết quả xử lý.
-
-</GlassBox>
-
-</div>
+</CodePanel>
 
 ---
 layout: content-card
 transition: slide-left
 ---
 
-# Luồng dữ liệu khi hệ thống vận hành
+<div class="deck-kicker">DDoS Detection</div>
 
-<div class="divider"></div>
+# LOGIC PHÂN LOẠI DoS / DDoS
 
-<div style="margin-top:12px;">
+<p class="deck-lead">Hai hướng Entropy giúp phân biệt DoS tập trung và DDoS phân tán, đồng thời loại trừ bằng chứng Port Scan.</p>
 
-```mermaid {scale: 0.6}
-flowchart LR
-  H["Máy trạm<br/>sinh lưu lượng"]
-  S["Thiết bị chuyển mạch<br/>cập nhật bộ đếm"]
-  C["Bộ điều khiển Ryu<br/>thu thập thống kê"]
-  W["Cửa sổ<br/>thời gian trượt"]
-  E["Tính Entropy<br/>và so sánh ngưỡng"]
-  M["Gửi luật<br/>loại bỏ"]
-  L["Ghi cảnh báo<br/>nhật ký"]
-  H --> S --> C --> W --> E
-  E -- "Bất thường" --> M --> S
-  E --> L
+<CodePanel class="code-panel-large" badge="Detection" title="DDoS classification" tone="red" caption="Hình 4.4: Logic Boolean phân loại hình thức tấn công tràn lụt">
+
+```python
+# Phân tích Entropy hai chiều từ dữ liệu Cửa sổ trượt
+src_entropy = calculate_entropy(aggregated_src)
+dst_entropy = calculate_entropy(directional_dst)
+
+# Nhận diện DoS thông thường
+is_dos = (
+    src_entropy < ENTROPY_THRESHOLD
+    and victim_packets >= DDOS_TRAFFIC_VOL
+    and not has_scan_evidence
+)
+
+# Nhận diện DDoS phân tán
+is_distributed_ddos = (
+    dst_entropy < DST_ENTROPY_THRESHOLD
+    and victim_packets >= DDOS_TRAFFIC_VOL
+    and num_attack_sources >= MIN_DDOS_SOURCES
+    and not has_scan_evidence
+)
 ```
 
-</div>
+</CodePanel>
 
 ---
 layout: content-card
 transition: slide-left
 ---
 
-# Cài đặt thuật toán Shannon Entropy
+<div class="deck-kicker">Port Scan</div>
 
-<div class="divider"></div>
+# LOGIC PHÁT HIỆN RÀ QUÉT CỔNG
 
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:10px;">
+<p class="deck-lead">Hệ thống kết hợp đếm số cổng đích và phân tích tốc độ gói tin để tránh phụ thuộc hoàn toàn vào khả năng trích xuất tcp_dst của Switch.</p>
 
-<div>
+<div class="split-board code-explain-board">
+  <CodePanel class="code-panel-fit" badge="Scan" title="get_rate_scan_candidates()" tone="blue" caption="Hình 4.6: Khối logic phân tích tốc độ gói tin để phát hiện rà quét mạng">
 
-- Đầu vào là tập giá trị đặc trưng trong một cửa sổ thời gian.
-- Tần suất xuất hiện của từng giá trị được chuyển thành xác suất.
-- Entropy phản ánh mức độ phân tán của lưu lượng.
-- Kết quả được dùng để so sánh với ngưỡng an toàn.
-
-</div>
-
-<GlassBox title="Công thức và giả mã" compact>
-
-$$
-H(X) = -\sum_{i=1}^{n} p(x_i)\log_2 p(x_i)
-$$
-
-```text
-đếm tần suất từng giá trị
-tính xác suất p(x_i)
-cộng -p(x_i) * log2(p(x_i))
-trả về H(X)
+```python
+def get_rate_scan_candidates(
+    aggregated_pairs,
+    window_seconds,
+    protected_ips=None,
+):
+    """Tìm cặp src -> protected dst có tốc độ giống port scan."""
+    if window_seconds is None or window_seconds <= 0:
+        return {}
+    protected_ips = get_protected_ips(protected_ips)
+    candidates = {}
+    for (src_ip, dst_ip), packets in aggregated_pairs.items():
+        packets = safe_int(packets)
+        if src_ip in protected_ips or dst_ip not in protected_ips:
+            continue
+        pps = packets / window_seconds
+        if (
+            PORT_SCAN_MIN_PACKETS <= packets
+            and PORT_SCAN_PPS_THRESHOLD <= pps <= PORT_SCAN_MAX_PPS
+        ):
+            candidates[(src_ip, dst_ip)] = {"packets": packets, "pps": pps}
+    return candidates
 ```
 
-</GlassBox>
+  </CodePanel>
 
+  <div class="timeline-panel code-timeline">
+    <TimelineStep title="Lớp 1: Port Count" active>Nếu số cổng đích phân biệt vượt PORT_SCAN_THRESHOLD, đánh dấu Port Scan.</TimelineStep>
+    <TimelineStep title="Lớp 2: Packet Rate">Dùng cửa sổ trượt để tính PPS từ nguồn đến IP được bảo vệ.</TimelineStep>
+    <TimelineStep title="Fallback" last>Nếu Switch không hỗ trợ tcp_dst trong stats, tốc độ gói tin vẫn giúp cảnh báo scan.</TimelineStep>
+  </div>
 </div>
 
 ---
@@ -201,152 +236,103 @@ layout: content-card
 transition: slide-left
 ---
 
-# Cửa sổ thời gian trượt trong triển khai
+<div class="deck-kicker">ARP Monitor</div>
 
-<div class="divider"></div>
+# BẢNG MAC-IP TIN CẬY
 
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:14px;">
+<p class="deck-lead">Bảng ánh xạ tĩnh là cơ sở để phát hiện một IP hợp lệ bị gắn với MAC không đúng quy hoạch.</p>
 
-<GlassBox title="Cách tổ chức dữ liệu" compact>
+<CodePanel class="code-panel-large code-panel-fit" badge="Trusted" title="TRUSTED MAC-IP" tone="amber" caption="Hình 4.7: Bảng MAC-IP tin cậy">
 
-- Dữ liệu thống kê được thu thập theo chu kỳ.
-- Mỗi chu kỳ đóng vai trò là một cửa sổ quan sát.
-- Hệ thống phân tích phần lưu lượng mới phát sinh thay vì toàn bộ dữ liệu cũ.
-
-</GlassBox>
-
-<GlassBox title="Ý nghĩa triển khai" compact>
-
-- Giảm chi phí xử lý trên bộ điều khiển.
-- Phản ánh trạng thái lưu lượng gần thời điểm hiện tại.
-- Phù hợp với yêu cầu phát hiện gần thời gian thực.
-
-</GlassBox>
-
-</div>
-
----
-layout: content-card
-transition: slide-left
----
-
-# Phát hiện DDoS trong triển khai
-
-<div class="divider"></div>
-
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:14px;">
-
-<GlassBox title="Theo dõi bất thường" compact>
-
-- Giám sát số lượng gói tin và mức phân tán của IP nguồn.
-- Lưu lượng tăng đột biến hoặc IP nguồn phân tán bất thường tạo cảnh báo.
-- Kết quả phân tích được cập nhật theo cửa sổ thời gian.
-
-</GlassBox>
-
-<GlassBox title="Kích hoạt ngăn chặn" compact>
-
-- Nguồn nghi vấn hoặc luồng độc hại được đưa vào cơ chế ngăn chặn.
-- Luật loại bỏ được cài xuống thiết bị chuyển mạch.
-- Cách xử lý này giảm tải cho bộ điều khiển và máy nạn nhân.
-
-</GlassBox>
-
-</div>
-
----
-layout: content-card
-transition: slide-left
----
-
-# Phát hiện dò quét cổng trong triển khai
-
-<div class="divider"></div>
-
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:14px;">
-
-<GlassBox title="Dữ liệu quan sát" compact>
-
-- Ghi nhận số lượng cổng đích mà một IP nguồn truy cập.
-- Nhiều kết nối ngắn đến nhiều cổng là dấu hiệu nghi vấn.
-- Entropy hoặc số lượng cổng đích được dùng để xác định bất thường.
-
-</GlassBox>
-
-<GlassBox title="Phản ứng" compact>
-
-- Khi vượt ngưỡng, hệ thống sinh cảnh báo dò quét cổng.
-- Nguồn nghi vấn được chuyển sang mô-đun ngăn chặn.
-- Luật chặn được áp dụng phù hợp với nguồn vi phạm.
-
-</GlassBox>
-
-</div>
-
----
-layout: content-card
-transition: slide-left
----
-
-# Phát hiện và ngăn chặn giả mạo ARP
-
-<div class="divider"></div>
-
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:14px;">
-
-<GlassBox title="Kiểm tra ràng buộc" compact>
-
-- Duy trì bảng ánh xạ MAC-IP tin cậy.
-- Bản tin ARP mới được kiểm tra với bảng ánh xạ này.
-- Nếu một IP xuất hiện với MAC không hợp lệ, hệ thống xác định nguy cơ giả mạo.
-
-</GlassBox>
-
-<GlassBox title="Bảo vệ tầng liên kết" compact>
-
-- Cảnh báo được ghi nhận vào bản ghi nhật ký.
-- Nguồn vi phạm có thể bị cô lập khỏi mạng nội bộ.
-- Cơ chế này bảo vệ tầng liên kết dữ liệu trong môi trường SDN.
-
-</GlassBox>
-
-</div>
-
----
-layout: content-card
-transition: slide-left
----
-
-# Cơ chế ngăn chặn tự động
-
-<div class="divider"></div>
-
-<div style="display:grid;grid-template-columns:0.95fr 1.05fr;gap:18px;margin-top:10px;align-items:start;">
-
-<div>
-
-- Khi phát hiện nguồn độc hại, hệ thống tạo luật loại bỏ.
-- Luật được gửi xuống thiết bị chuyển mạch bằng bản tin Flow-Mod.
-- Luật có độ ưu tiên cao để chặn trước các luật chuyển tiếp thông thường.
-- Lưu lượng độc hại bị loại bỏ ngay tại mặt phẳng dữ liệu.
-- Bộ điều khiển giảm tải vì không phải xử lý lặp lại cùng nguồn tấn công.
-
-</div>
-
-<div>
-
-```mermaid {scale: 0.54}
-flowchart TB
-  A["Phát hiện nguồn độc hại"]
-  B["Tạo luật loại bỏ"]
-  C["Gửi bản tin Flow-Mod"]
-  D["Cài vào bảng luồng"]
-  E["Loại bỏ tại mặt phẳng dữ liệu"]
-  A --> B --> C --> D --> E
+```python
+# Bảng MAC-IP tin cậy (từ topology.py)
+TRUSTED = {
+    "10.0.0.1":  "00:00:00:00:00:01",
+    "10.0.0.11": "00:00:00:00:00:11",
+    "10.0.0.12": "00:00:00:00:00:12",
+    "10.0.0.13": "00:00:00:00:00:13",
+    "10.0.0.14": "00:00:00:00:00:14",
+    "10.0.0.15": "00:00:00:00:00:15",
+    "10.0.0.21": "00:00:00:00:00:21",
+    "10.0.0.22": "00:00:00:00:00:22",
+    "10.0.0.23": "00:00:00:00:00:23",
+    "10.0.0.24": "00:00:00:00:00:24",
+    "10.0.0.25": "00:00:00:00:00:25",
+    "10.0.0.26": "00:00:00:00:00:26",
+    "10.0.0.27": "00:00:00:00:00:27",
+    "10.0.0.28": "00:00:00:00:00:28",
+    "10.0.0.29": "00:00:00:00:00:29",
+    "10.0.0.30": "00:00:00:00:00:30",
+}
 ```
 
-</div>
+</CodePanel>
 
+---
+layout: content-card
+transition: slide-left
+---
+
+<div class="deck-kicker">4.3.6. ARP Monitor</div>
+
+# CHỐNG GIẢ MẠO ARP BẰNG CÁCH ĐỐI CHIẾU BẢNG MAC-IP
+
+<p class="deck-lead">Ứng dụng Ryu kiểm tra ARP Packet-In, đối chiếu MAC/IP, rồi phát cảnh báo khi có sai lệch.</p>
+
+<div class="code-slide-grid arp-monitor-grid">
+  <CodePanel class="code-panel-fit" badge="Check" title="Đối chiếu MAC-IP" tone="green" caption="Bỏ qua gói ARP hợp lệ đã khớp bảng tin cậy">
+
+```python
+def handle_arp(self, pkt):
+    arp_pkt = pkt.get_protocol(arp.arp)
+    if not arp_pkt:
+        return
+    src_ip = arp_pkt.src_ip
+    src_mac = arp_pkt.src_mac
+    # Đối chiếu với danh sách MAC-IP tĩnh đã quy hoạch
+    trusted_mac = TRUSTED.get(src_ip)
+    attacker_ip = mac_to_ip(src_mac)
+    # Nếu khớp hoàn toàn với bảng tin cậy -> Bỏ qua
+    if trusted_mac and src_mac.lower() == trusted_mac.lower():
+        return
+```
+
+  </CodePanel>
+
+  <CodePanel class="code-panel-fit" badge="Alert" title="Tạo cảnh báo" tone="red" caption="Hình 4.8: Logic bảo mật Layer 2 đối chiếu MAC-IP Binding">
+
+```python
+    # Trường hợp 1: IP có trong danh sách nhưng sai MAC
+    if trusted_mac:
+        alert = self.build_alert(
+            attack_type="ARP_SPOOFING",
+            attacker_ip=attacker_ip,
+            claimed_ip=src_ip,
+            src_mac=src_mac,
+            trusted_mac=trusted_mac,
+            message=(
+                f"[CẢNH BÁO] Phát hiện ARP Spoofing! "
+                f"IP {src_ip} đang bị giả mạo bởi MAC {src_mac}"
+            ),
+        )
+        self.emit_alert(alert)
+        return
+    # Trường hợp 2: IP lạ, không có trong quy hoạch mạng
+    alert = self.build_alert(
+        attack_type="ARP_UNKNOWN_BINDING",
+        attacker_ip=attacker_ip,
+        claimed_ip=src_ip,
+        src_mac=src_mac,
+        trusted_mac=None,
+        message=(
+            f"[CẢNH BÁO] Phát hiện ARP Spoofing! "
+            f"IP {src_ip} đang bị giả mạo bởi MAC {src_mac}"
+        ),
+    )
+    self.emit_alert(alert)
+```
+
+  </CodePanel>
 </div>
 
 ---
@@ -354,19 +340,19 @@ layout: content-card
 transition: slide-left
 ---
 
-# Các kịch bản kiểm thử
+<div class="deck-kicker">Test-cases</div>
 
-<div class="divider"></div>
+# CÁC KỊCH BẢN KIỂM THỬ
 
-<div style="margin-top:10px;">
+<p class="deck-lead"><code>test_ids.py</code> tự động khởi tạo mạng, kích hoạt mã độc từ máy ảo, thu thập log và đánh giá kết quả.</p>
 
-| Kịch bản | Mục tiêu | Dấu hiệu cần quan sát | Kết quả mong đợi |
-|---|---|---|---|
-| Lưu lượng bình thường | Kiểm tra không cảnh báo sai | Entropy ổn định | Không cài luật chặn |
-| DDoS | Phát hiện lưu lượng tăng đột biến | IP nguồn hoặc tốc độ gói tin bất thường | Cảnh báo và chặn nguồn độc hại |
-| Dò quét cổng | Phát hiện truy cập nhiều cổng | Cổng đích phân tán bất thường | Cảnh báo và áp dụng luật chặn |
-| Giả mạo ARP | Kiểm tra đối chiếu MAC-IP | Ánh xạ sai lệch | Cảnh báo và cô lập nguồn giả mạo |
-
+<div class="roadmap-grid">
+  <div class="roadmap-item accent-green"><div class="roadmap-code">TC1</div><div><h3>Benign Traffic</h3><p>Benign host ping Victim Server; kỳ vọng IDS im lặng.</p></div></div>
+  <div class="roadmap-item accent-red"><div class="roadmap-code">TC2</div><div><h3>DoS</h3><p>hping3 --flood từ một Attacker; kỳ vọng phát hiện DoS.</p></div></div>
+  <div class="roadmap-item accent-red"><div class="roadmap-code">TC3</div><div><h3>Distributed_DoS</h3><p>hping3 --flood từ nhiều Attacker; kỳ vọng phát hiện DDoS.</p></div></div>
+  <div class="roadmap-item accent-blue"><div class="roadmap-code">TC4</div><div><h3>Port Scan</h3><p>nmap -p 1-1000 rà nhiều cổng; kỳ vọng cảnh báo Port_Scan.</p></div></div>
+  <div class="roadmap-item accent-cyan"><div class="roadmap-code">TC5</div><div><h3>Rate Scan</h3><p>hping3 tạo scan tốc độ cao; kỳ vọng fallback PPS hoạt động.</p></div></div>
+  <div class="roadmap-item accent-amber"><div class="roadmap-code">TC6-7</div><div><h3>ARP Spoofing</h3><p>arpspoof với IP giả hoặc IP không tồn tại; kỳ vọng ARP Monitor cảnh báo.</p></div></div>
 </div>
 
 ---
@@ -374,113 +360,19 @@ layout: content-card
 transition: slide-left
 ---
 
-# Tiêu chí đánh giá
+<div class="deck-kicker">Đánh giá hiệu năng</div>
 
-<div class="divider"></div>
+# CƠ CHẾ ĐÁNH GIÁ HIỆU NĂNG
 
-<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:14px;">
+<p class="deck-lead">Sau khi kiểm thử, hệ thống đối chiếu cảnh báo thực tế trong <code>alerts.log</code> với danh sách kỳ vọng và xuất kết quả ra <code>test_results.json</code>.</p>
 
-<GlassBox title="Khả năng phát hiện" compact>
-
-- Phát hiện đúng loại tấn công trong từng kịch bản.
-- Thời gian từ bất thường đến cảnh báo cần ngắn.
-- Tỷ lệ cảnh báo nhầm được xem xét khi có lưu lượng hợp lệ tăng đột biến.
-
-</GlassBox>
-
-<GlassBox title="Khả năng phản ứng" compact>
-
-- Cài đặt luật chặn tự động sau khi phát hiện.
-- Hạn chế ảnh hưởng đến lưu lượng hợp lệ.
-- Bộ điều khiển duy trì ổn định khi có tấn công.
-
-</GlassBox>
-
+<div class="card-grid-3">
+  <div class="feature-card accent-blue"><div class="icon-bubble"><span class="i-mdi-percent"></span></div><h3>Precision</h3><p>Tỷ lệ cảnh báo đúng trên tổng số cảnh báo mà Controller phát ra.</p></div>
+  <div class="feature-card accent-green"><div class="icon-bubble"><span class="i-twemoji-chart-increasing"></span></div><h3>Recall</h3><p>Tỷ lệ các cuộc tấn công bị bắt giữ thành công trên tổng số tấn công thực tế.</p></div>
+  <div class="feature-card accent-violet"><div class="icon-bubble"><span class="i-twemoji-bar-chart"></span></div><h3>F1-Score</h3><p>Trung bình điều hòa giữa Precision và Recall, phản ánh độ ổn định thuật toán.</p></div>
 </div>
 
----
-layout: content-card
-transition: slide-left
----
-
-# Kết quả thực nghiệm
-
-<div class="divider"></div>
-
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:14px;">
-
-<GlassBox title="Kết quả quan sát" compact>
-
-- Hệ thống phát hiện được biến động bất thường trong các kịch bản kiểm thử.
-- Entropy phù hợp với DDoS và dò quét cổng nhờ khả năng đo mức phân tán lưu lượng.
-- Đối chiếu MAC-IP hỗ trợ phát hiện giả mạo ARP.
-
-</GlassBox>
-
-<GlassBox title="Nhận định thận trọng" compact>
-
-- Luật loại bỏ được cài xuống thiết bị chuyển mạch để ngăn lưu lượng độc hại.
-- Cần tiếp tục tinh chỉnh ngưỡng để giảm cảnh báo nhầm.
-- Trường hợp lưu lượng hợp lệ tăng đột biến vẫn cần được đánh giá thêm.
-
-</GlassBox>
-
-</div>
-
----
-layout: content-card
-transition: slide-left
----
-
-# Nhận xét sau thực nghiệm
-
-<div class="divider"></div>
-
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:14px;">
-
-<GlassBox title="Điểm phù hợp" compact>
-
-- Thống kê luồng giúp giảm chi phí xử lý so với kiểm tra sâu gói tin.
-- Xử lý tại bộ điều khiển cho phép phản hồi tập trung và linh hoạt.
-- Luật loại bỏ ở mặt phẳng dữ liệu giúp giảm tải cho bộ điều khiển.
-
-</GlassBox>
-
-<GlassBox title="Giới hạn cần lưu ý" compact>
-
-- Hạn chế chính nằm ở việc lựa chọn ngưỡng phát hiện.
-- Mininet phù hợp cho kiểm chứng ban đầu nhưng chưa thay thế mạng thực tế.
-- Cần đánh giá thêm trên quy mô lớn hơn hoặc thiết bị SDN vật lý.
-
-</GlassBox>
-
-</div>
-
----
-layout: content-card
-transition: slide-left
----
-
-# Tổng kết Chương 4
-
-<div class="divider"></div>
-
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:14px;">
-
-<GlassBox title="Triển khai" compact>
-
-- Chương 4 đã trình bày môi trường và cấu trúc mạng thực nghiệm.
-- Các mô-đun chính được triển khai trên nền Ryu và Mininet.
-- Kịch bản kiểm thử gồm DDoS, dò quét cổng và giả mạo ARP.
-
-</GlassBox>
-
-<GlassBox title="Đánh giá" compact>
-
-- Kết quả cho thấy thống kê luồng kết hợp Entropy có tính khả thi trong SDN.
-- Cơ chế đối chiếu MAC-IP bổ sung cho phát hiện giả mạo ARP.
-- Các hạn chế thực nghiệm là cơ sở cho hướng phát triển ở Chương 5.
-
-</GlassBox>
-
+<div class="callout-band accent-green">
+  <div class="icon-bubble"><span class="i-twemoji-clipboard"></span></div>
+  <p><strong>Kết quả:</strong> Báo cáo nhấn mạnh minh chứng định lượng từ test tự động, không nêu các con số cố định trong phần nội dung trích dẫn.</p>
 </div>

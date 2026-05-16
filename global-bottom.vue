@@ -1,42 +1,64 @@
-<!--
-  FILE: global-bottom.vue
-  PATH: /home/nora/Projects/slides/SDN-IDS/global-bottom.vue
-  DESC: Global footer — warm white theme
--->
 <script setup>
+import { computed } from 'vue'
 import { useNav } from '@slidev/client'
+
 const nav = useNav()
+const hiddenLayouts = new Set(['cover-custom', 'none', 'end'])
+const shouldShow = computed(() => !hiddenLayouts.has(nav.currentLayout))
 </script>
 
 <template>
-  <footer v-if="nav.currentLayout !== 'cover-custom' && nav.currentLayout !== 'end'" class="global-footer">
+  <footer v-if="shouldShow" class="global-footer">
     <div class="footer-left">
       <span class="footer-brand">SDN-IDS</span>
-      <span class="footer-sep">·</span>
+      <span class="footer-dot"></span>
       <span class="footer-title">HỆ THỐNG PHÁT HIỆN VÀ NGĂN CHẶN TẤN CÔNG MẠNG</span>
-    </div>
-    <div class="footer-right">
-      <span class="footer-page">{{ nav.currentPage }} / {{ nav.total }}</span>
     </div>
   </footer>
 </template>
+
 <style scoped>
 .global-footer {
   position: absolute;
-  bottom: 0; left: 0; right: 0;
-  display: flex; justify-content: space-between; align-items: center;
-  padding: 8px 32px;
-  font-family: var(--sdn-font-sans);
-  font-size: 0.65rem;
-  color: var(--sdn-text-muted);
-  border-top: 1px solid rgba(0,0,0,0.04);
-  background: rgba(250,248,245,0.7);
-  backdrop-filter: blur(8px);
+  right: 28px;
+  bottom: 7px;
+  left: 28px;
   z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid var(--sdn-border-soft);
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--sdn-text-muted);
+  font-family: var(--sdn-font-sans);
+  font-size: 0.62rem;
+  padding-top: 8px;
 }
-.footer-left { display: flex; align-items: center; gap: 6px; }
-.footer-brand { font-weight: 700; color: var(--sdn-primary); letter-spacing: 0.05em; }
-.footer-sep { opacity: 0.3; }
-.footer-title { opacity: 0.8; }
-.footer-page { font-weight: 600; font-variant-numeric: tabular-nums; }
+
+.footer-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.footer-brand {
+  color: var(--sdn-blue);
+  font-weight: 850;
+  letter-spacing: 0.08em;
+}
+
+.footer-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 999px;
+  background: var(--sdn-green);
+}
+
+.footer-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 </style>
